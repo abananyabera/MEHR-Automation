@@ -1,7 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Configuration;
-using System.Data.SqlClient;
 using static System.Net.Mime.MediaTypeNames;
+using System.Data;
+using System.Data.SqlClient;
+
 
 namespace MEHR_Automation
 {
@@ -10,35 +16,27 @@ namespace MEHR_Automation
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World");
+            //Console.ReadLine();
 
-            // Retrieve connection string from app.config
-            //string connectionString = "Data Source = localhost\\SQLEXPRESS; Database = AppData; Initial Catalog = test; Integrated Security = SSPI"; 
-            string connectionString = ConfigurationManager.ConnectionStrings["Dbcon"].ConnectionString;
+            string configuration = ConfigurationManager.ConnectionStrings["Dbcon"].ToString();
+            SqlConnection sqlconnection = new SqlConnection(configuration);
+            sqlconnection.Open();
 
-
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            Console.WriteLine("Connection is successfull");
+            SqlCommand cmd = new SqlCommand("Select count (*), datasource, datasourceid from tbl_Employees_Import group by datasource,datasourceid order by datasourceid  ", sqlconnection);
+            SqlDataReader datareader = cmd.ExecuteReader();
+            while (datareader.Read())
             {
-                try
-                {
-                    // Open the database connection
-                    connection.Open();
-                    // Perform database operations here
-                    Console.WriteLine("Connected to the database.");
-
-                    SqlCommand cmd = new SqlCommand("select * from Submission", connection);
-                    SqlDataReader datareader = cmd.ExecuteReader();
-                    while (datareader.Read())
-                    {
-                        Console.WriteLine(datareader[0] + " " + datareader["OrganizationName"] + " " + datareader[2]);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Error: " + ex.Message + ex);
-                }
+                Console.WriteLine(datareader[0] + "|" + datareader[1] + "|" + datareader[2]);
             }
 
+            sqlconnection.Close();
             Console.ReadLine();
+
+
+
+
+
         }
     }
 }
