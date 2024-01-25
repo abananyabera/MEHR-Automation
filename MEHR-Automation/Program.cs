@@ -8,6 +8,7 @@ using static System.Net.Mime.MediaTypeNames;
 using System.Data;
 using System.Data.SqlClient;
 using System.Collections;
+using System.Windows.Forms;
 
 
 namespace MEHR_Automation
@@ -25,15 +26,29 @@ namespace MEHR_Automation
             string timeStamp = DateTime.Now.ToString("MMddyyyy");
             string destinationTable1 = "[dbo]. [tbl_employees_stage1_" + timeStamp+ "]";
             string query1 = "select * into"+" "+ destinationTable1+" "+"from [dbo]. [tbl_employees_stage1]";
-
-            //drop backup table 
-            SqlCommand cmd = new SqlCommand("drop table [dbo]. [tbl_employees_stage1_01252024]", sqlconnection);
-            cmd.ExecuteNonQuery();
-
-            //SqlCommand cmd = new SqlCommand(query1, sqlconnection);
-            //cmd.ExecuteNonQuery();
-            ExecuteQuery(query1, sqlconnection);
             
+
+            // checking the table is already presnet or not if present returns 1 else return 0
+            int connectionresult = 0;
+            string checkingtable = "SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = " + "'tbl_employees_stage1_" + timeStamp  + "'";
+            SqlDataReader connection = ExecuteQuery(checkingtable, sqlconnection);
+            while (connection.Read())
+            {
+                connectionresult = (int)connection[0];
+            }
+
+            //drop backup table if already present
+            if (connectionresult == 1)
+            {
+                SqlCommand cmd = new SqlCommand("drop table [dbo]. [tbl_employees_stage1_01252024]", sqlconnection);
+                cmd.ExecuteNonQuery();
+                Console.WriteLine(destinationTable1 + "dropped succesfully");
+            }
+
+            // creates the backuptable 1 if not present else it returns error
+            ExecuteQuery(query1, sqlconnection);
+
+
             int countMainTable = 0;
             string query4 = "Select count(*) from tbl_employees_stage1";
             SqlDataReader counter0 = ExecuteQuery(query4, sqlconnection);
