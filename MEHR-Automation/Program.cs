@@ -152,24 +152,36 @@ namespace MEHR_Automation
             Console.WriteLine("------------------Query3 is executed----------------");
             #endregion
 
-            #region MyRegion
-            string Query4 = "select uniqueid,count(uniqueid),datasourceid from tbl_employees_import group by uniqueid,datasourceid having count(uniqueid)>1";
-            SqlDataReader datareader4 = ExecuteQuery(Query4, sqlconnection);
-            while (datareader4.Read())
+            Console.WriteLine("Please Disable the jobs: \n 1. UserID Synch Job \n 2. Modification Synch Job \n Please press Y to continue");
+            char chkJobs = Console.ReadLine()[0];
+            Console.WriteLine(chkJobs);
+
+            if (chkJobs == 'Y')
             {
-                Console.WriteLine(datareader[0] + "|" + datareader[1] + "|" + datareader[2]);
+                Console.WriteLine("\n\n\nJob disabled successfully\n\n\n");
+                #region MyRegion
+                string Query4 = "select uniqueid,count(uniqueid),datasourceid from tbl_employees_import group by uniqueid,datasourceid having count(uniqueid)>1";
+                SqlDataReader datareader4 = ExecuteQuery(Query4, sqlconnection);
+                while (datareader4.Read())
+                {
+                    Console.WriteLine(datareader[0] + "|" + datareader[1] + "|" + datareader[2]);
+                }
+
+                Console.WriteLine("------------------Query4 is executed----------------");
+
+                #endregion
+
+                sqlconnection.Close();
+
+
+                //Read Excel  people Report File
+                 ReadExcelFile();
+
             }
-
-            Console.WriteLine("------------------Query4 is executed----------------");
-
-            #endregion
-
-            sqlconnection.Close();
-            
-
-            //Read Excel  people Report File
-            ReadExcelFile();
-
+            else
+            {
+                Console.WriteLine("You have not disabled the job.");
+            }
 
         }
 
