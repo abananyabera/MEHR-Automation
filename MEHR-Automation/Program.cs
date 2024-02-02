@@ -14,6 +14,7 @@ using _Excel = Microsoft.Office.Interop.Excel;
 using System.IO;
 
 
+
 namespace MEHR_Automation
 {
     internal class Program
@@ -260,7 +261,7 @@ namespace MEHR_Automation
                 }
                 #endregion
 
-                //#region MyRegion
+                #region MyRegion
                 //Console.WriteLine("\n stored procedure proc_Pre_Update_Processing started\n");
                 //string Query8 = "exec proc_Pre_Update_Processing";
                 //SqlDataReader datareader8 = ExecuteQuery(Query8, sqlconnection);
@@ -269,9 +270,9 @@ namespace MEHR_Automation
                 //    Console.WriteLine(datareader8[0] + "|" + datareader8[1]);
                 //}
                 //Console.WriteLine("\nstored procedure proc_Pre_Update_Processing is Executed\n");
-                //#endregion
+                #endregion
 
-                //#region MyRegion
+                #region MyRegion
                 //Console.WriteLine("\n stored procedure procProcessEmployeeUpdates started\n");
                 //string Query9 = "exec procProcessEmployeeUpdates";
                 //SqlDataReader datareader9 = ExecuteQuery(Query9, sqlconnection);
@@ -280,7 +281,7 @@ namespace MEHR_Automation
                 //    Console.WriteLine(datareader9[0] + "|" + datareader9[1]);
                 //}
                 //Console.WriteLine("\nstored procedure procProcessEmployeeUpdates is Executed\n");
-                //#endregion
+                #endregion
 
                 #region MyRegion
                 Console.WriteLine("\n count of tbl_Employees_Import_Add is started \n");
@@ -333,9 +334,9 @@ namespace MEHR_Automation
 
                 
                 int count = 0;
-                while (count < 4)
+                while (count < 5)
                 {
-                    Console.WriteLine("select the fieldname that need to be executed \n 1.orig_epassid \n 2.orig_internet_email \n 3.orig_first \n 4.orig_last \n");
+                    Console.WriteLine("select the fieldname that need to be executed \n 1.orig_epassid \n 2.orig_internet_email \n 3.orig_first \n 4.orig_last \n 5.orig_middle \n");
                     int admin_student = int.Parse(Console.ReadLine());
                     switch (admin_student)
                     {
@@ -343,20 +344,89 @@ namespace MEHR_Automation
                             Console.WriteLine("\n orig_epassid is started \n");
                             string Query14 = "Select a.orig_epassid,b.epassid,a.orig_first,b.first,a.orig_last,b.last,a.orig_middle,b.middle,a.orig_internet_email,b.internet_email,a.orig_site,b.site from dbo.tbl_Employees_Import_Changed A inner join dbo.tbl_employees_stage1_Hold B on A.masterid = b.masterid where a.fieldname = 'orig_epassid'";
                             SqlDataReader datareader14 = ExecuteQuery(Query14, sqlconnection);
+
+                            //create excel workbook
+                            var excelApp = new Microsoft.Office.Interop.Excel.Application();
+                            var workbook = excelApp.Workbooks.Add();
+                            var worksheet = (Worksheet)workbook.Sheets[1];
+
+                            //Add column headers
+                            for (int i = 0; i < datareader14.FieldCount; i++)
+                            {
+                                worksheet.Cells[1, i + 1] = datareader14.GetName(i);
+                            }
+
+                            // Add data to Excel worksheet
+                            int row = 2;
                             while (datareader14.Read())
                             {
-                                Console.WriteLine("Tharun Sai");
+                                for (int i = 0; i < datareader14.FieldCount; i++)
+                                {
+                                    worksheet.Cells[row, i + 1] = datareader14[i];
+                                }
+                                row++;
                             }
+
+                            // Save Excel workbook
+                            string Pathname = "C:\\Users\\kwr579\\Desktop\\AUTOMATION\\Excel1.xlsx";
+                            workbook.SaveAs(Pathname);
+                            workbook.Close();
+                            excelApp.Quit();
+
+                            Console.WriteLine($"Excel file created at: {Pathname}");
+
+
+
                             Console.WriteLine("\n orig_epassid is completed \n");
                             break;
                         case 2:
                             Console.WriteLine("\n orig_internet_email is started \n");
                             string Query15 = "Select a.orig_epassid,b.epassid,a.orig_first,b.first,a.orig_last,b.last,a.orig_middle,b.middle,a.orig_internet_email,b.internet_email,a.orig_site,b.site from \r\ndbo.tbl_Employees_Import_Changed A inner join dbo.tbl_employees_stage1_Hold B on A.masterid = b.masterid\r\nwhere a.fieldname = 'orig_internet_email'";
                             SqlDataReader datareader15 = ExecuteQuery(Query15, sqlconnection);
+
+                            string existingPath = "C:\\Users\\kwr579\\Desktop\\AUTOMATION\\Excel1.xlsx";
+                            Microsoft.Office.Interop.Excel.Application existingApp = new Microsoft.Office.Interop.Excel.Application();
+                            existingApp.Visible = true;
+                            var existingWorkbook = existingApp.Workbooks.Open(existingPath);
+
+                            // Get or create Sheet2
+                            Worksheet sheet2;
+                            try
+                            {
+                                // Try to get Sheet2 by index
+                                sheet2 = (Worksheet)existingWorkbook.Sheets[2];
+                            }
+                            catch
+                            {
+                                // If Sheet2 doesn't exist, add it
+                                sheet2 = (Worksheet)existingWorkbook.Sheets.Add(After: existingWorkbook.Sheets[existingWorkbook.Sheets.Count]);
+                                sheet2.Name = "Sheet2";
+                            }
+
+                            // Add column headers
+                            for (int i = 0; i < datareader15.FieldCount; i++)
+                            {
+                                sheet2.Cells[1, i + 1] = datareader15.GetName(i);
+                            }
+
+                            
+                            // Add data to Sheet2
+                            int row2 = 2;
                             while (datareader15.Read())
                             {
-                                Console.WriteLine("Kanna");
+                                for (int i = 0; i < datareader15.FieldCount; i++)
+                                {
+                                    sheet2.Cells[row2, i + 1] = datareader15[i];
+                                }
+                                row2++;
                             }
+
+                            // Save the existing Excel workbook
+                            existingWorkbook.Save();
+                            existingWorkbook.Close();
+                            existingApp.Quit();
+
+                            Console.WriteLine($"Excel file updated at: {existingPath}");
                             Console.WriteLine("\n orig_internet_email is completed \n");
                             break;
                         case 3:
@@ -378,6 +448,8 @@ namespace MEHR_Automation
                                 Console.WriteLine("Kanna Sai");
                             }
                             Console.WriteLine("\n orig_last is completed \n");
+                            break;
+                        case 5:
                             break;
                         default:
                             Environment.Exit(0);
