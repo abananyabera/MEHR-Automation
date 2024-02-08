@@ -12,9 +12,10 @@ namespace MEHR_Automation
     {
 
         ExecuteQueries executeQueries = new ExecuteQueries();
-       
 
-        public void takeTableBackup(SqlConnection sqlconnection) {
+
+        public void takeTableBackup1(SqlConnection sqlconnection) 
+        {
             string timeStamp = DateTime.Now.ToString("MMddyyyy");
             string destinationTable1 = "[dbo]. [tbl_employees_stage1_" + timeStamp + "]";
             string query1 = "select * into" + " " + destinationTable1 + " " + "from [dbo]. [tbl_employees_stage1]";
@@ -59,14 +60,18 @@ namespace MEHR_Automation
 
             if (countMainTable == countMainTableBackup)
             {
-                Console.WriteLine("Backup for tbl_employees_stage1 is successful");
+                Console.WriteLine("Backup for tbl_employees_stage1 is successfull");
             }
             else
             {
                 Console.WriteLine("Backup for tbl_employees_stage1 is failed");
             }
 
+            Console.WriteLine("--------------------------------------------------------------------------------------------");
+        }
 
+        public void takeTableBackup2(SqlConnection sqlconnection)
+        {
             string timeStamp2 = DateTime.Now.ToString("MMddyyyy");
             string destinationTable2 = "[dbo]. [tbl_employees_stage1_hold_" + timeStamp2 + "]";
             string backupquery = "select * into" + " " + destinationTable2 + " " + "from [dbo]. [tbl_employees_stage1_hold]";
@@ -99,7 +104,7 @@ namespace MEHR_Automation
             int countMainTable2 = 0;
             string backupquery4 = "Select count(*) from tbl_employees_stage1_hold";
             SqlDataReader backupcounter1 = executeQueries.ExecuteQuery(backupquery4, sqlconnection);
-            while (counter0.Read())
+            while (backupcounter1.Read())
             {
                 countMainTable2 = (int)backupcounter1[0];
             }
@@ -107,19 +112,22 @@ namespace MEHR_Automation
             int countMainTableBackup2 = 0;
             string backquery5 = "Select count(*) from " + destinationTable2;
             SqlDataReader backupcounter2 = executeQueries.ExecuteQuery(backquery5, sqlconnection);
-            while (counter1.Read())
+            while (backupcounter2.Read())
             {
                 countMainTableBackup2 = (int)backupcounter2[0];
             }
 
             if (countMainTable2 == countMainTableBackup2)
             {
-                Console.WriteLine("Backup for tbl_employees_stage1_hold is successful");
+                Console.WriteLine("Backup for tbl_employees_stage1_hold is successfull");
             }
             else
             {
                 Console.WriteLine("Backup for tbl_employees_stage1_hold is failed");
             }
+
+            Console.WriteLine("--------------------------------------------------------------------------------------------");
         }
+        
     }
 }

@@ -28,298 +28,47 @@ namespace MEHR_Automation
             //execute commands
             Console.WriteLine("--------------------------------------------------------------------------------------------");
 
-            #region MyRegion
 
             tablebackup tableBackup = new tablebackup();
-            tableBackup.takeTableBackup(sqlconnection);
-
-            //string timeStamp = DateTime.Now.ToString("MMddyyyy");
-            //string destinationTable1 = "[dbo]. [tbl_employees_stage1_" + timeStamp + "]";
-            //string query1 = "select * into" + " " + destinationTable1 + " " + "from [dbo]. [tbl_employees_stage1]";
+            tableBackup.takeTableBackup1(sqlconnection);//TableBackup1
+            tableBackup.takeTableBackup2(sqlconnection);//TableBackup2
 
 
-            //// checking the table is already presnet or not if present returns 1 else return 0
-            //int connectionresult = 0;
-            //string checkingtable = "SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = " + "'tbl_employees_stage1_" + timeStamp + "'";
-            //SqlDataReader connection = ExecuteQuery(checkingtable, sqlconnection);
-            //while (connection.Read())
-            //{
-            //    connectionresult = (int)connection[0];
-            //}
+            DataLoadCount dataLoadCount = new DataLoadCount();
 
-            ////drop backup table if already present
-            //if (connectionresult == 1)
-            //{
-            //    SqlCommand cmd = new SqlCommand("drop table " + destinationTable1 , sqlconnection);
-            //    cmd.ExecuteNonQuery();
-            //    Console.WriteLine(destinationTable1 + "dropped succesfully");
-            //}
-
-            //// creates the backuptable 1 if not present else it returns error
-            //ExecuteQuery(query1, sqlconnection);
-
-
-            //int countMainTable = 0;
-            //string query4 = "Select count(*) from [dbo]. [tbl_employees_stage1]";
-            //SqlDataReader counter0 = ExecuteQuery(query4, sqlconnection);
-            //while (counter0.Read())
-            //{
-            //    countMainTable = (int)counter0[0];
-            //}
-
-            //int countMainTableBackup = 0;
-            //string query5 = "Select count(*) from " + destinationTable1;
-            //SqlDataReader counter1 = ExecuteQuery(query5, sqlconnection);
-            //while (counter1.Read())
-            //{
-            //    countMainTableBackup = (int)counter1[0];
-            //}
-
-            //if (countMainTable == countMainTableBackup)
-            //{
-            //    Console.WriteLine("Backup for tbl_employees_stage1 is successful");
-            //}
-            //else
-            //{
-            //    Console.WriteLine("Backup for tbl_employees_stage1 is failed");
-            //}
-            Console.WriteLine("--------------------------------------------------------------------------------------------");
-
-            #endregion
-
-            #region MyRegion
-
-            //string timeStamp2 = DateTime.Now.ToString("MMddyyyy");
-            //string destinationTable2 = "[dbo]. [tbl_employees_stage1_hold_" + timeStamp2 + "]";
-            //string backupquery = "select * into" + " " + destinationTable2 + " " + "from [dbo]. [tbl_employees_stage1_hold]";
-
-
-            //// checking the table is already presnet or not if present returns 1 else return 0
-            //int connectionresult2 = 0;
-            //string checkingtable2 = "SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = " + "'tbl_employees_stage1_hold_" + timeStamp2 + "'";
-            
-            //SqlDataReader connection2 = ExecuteQuery(checkingtable2, sqlconnection);
-            //while (connection2.Read())
-            //{
-            //    connectionresult2 = (int)connection2[0];
-                
-            //}
-
-            ////drop backup table 2 if already present
-            //if (connectionresult2 == 1)
-            //{
-            //    SqlCommand cmd = new SqlCommand("drop table " + destinationTable2, sqlconnection);
-                
-            //    cmd.ExecuteNonQuery();
-            //    Console.WriteLine(destinationTable2 + "dropped succesfully");
-            //}
-
-            //// creates the backuptable 2 if not present else it returns error
-            //ExecuteQuery(backupquery, sqlconnection);
-
-
-            //int countMainTable2 = 0;
-            //string backupquery4 = "Select count(*) from tbl_employees_stage1_hold";
-            //SqlDataReader backupcounter1 = ExecuteQuery(backupquery4, sqlconnection);
-            //while (counter0.Read())
-            //{
-            //    countMainTable2 = (int)backupcounter1[0];
-            //}
-
-            //int countMainTableBackup2 = 0;
-            //string backquery5 = "Select count(*) from " + destinationTable2;
-            //SqlDataReader backupcounter2 = ExecuteQuery(backquery5, sqlconnection);
-            //while (counter1.Read())
-            //{
-            //    countMainTableBackup2 = (int)backupcounter2[0];
-            //}
-
-            //if (countMainTable2 == countMainTableBackup2)
-            //{
-            //    Console.WriteLine("Backup for tbl_employees_stage1_hold is successful");
-            //}
-            //else
-            //{
-            //    Console.WriteLine("Backup for tbl_employees_stage1_hold is failed");
-            //}
-            Console.WriteLine("--------------------------------------------------------------------------------------------");
-
-            #endregion
-
-            //Read csv file Dataload_77 csv file
-            int lineCount = CountLinesInCsvFile(@"C:\Users\kwr579\Desktop\AUTOMATION\DataLoad_77_AfterTriage.csv");
-            Console.WriteLine("Number of lines in the file: " + lineCount);
-
-            #region MyRegion
-            int comparisioncount = 0;
-            string Query3 = "Select count (*), datasource, datasourceid from tbl_Employees_Import group by datasource,datasourceid order by datasourceid";
-            SqlDataReader datareader = ExecuteQuery(Query3, sqlconnection);
-            while (datareader.Read())
+            bool DataLoadcountcomparision = dataLoadCount.Dataloadfile(sqlconnection);
+            if(DataLoadcountcomparision == true)
             {
-                
-                comparisioncount = comparisioncount +(int)datareader[0];
-                Console.WriteLine(datareader[0] + "|" + datareader[1] + "|" + datareader[2]);
-                
-
-            }
-            Console.WriteLine(comparisioncount);
-            if (lineCount == comparisioncount)
-            {
-                Console.WriteLine("Tharun Sai");
+                Console.WriteLine("DataLoad_77_After_triage file count and Query count is Equal.");
             }
             else
             {
-                Console.WriteLine("Kanna");
+                Console.WriteLine("DataLoad_77_After_triage file count and Query count is not Equal.");
+                Console.WriteLine("We cannot proceed any further please type any key to Exit");
+                Console.ReadLine();
+
+                //Environment.Exit(0);
             }
-            Console.WriteLine("------------------Query3 is executed----------------");
-            #endregion
+
 
             Console.WriteLine("Please Disable the jobs: \n 1. UserID Synch Job \n 2. Modification Synch Job \n Please press Y to continue");
             char chkJobs = Console.ReadLine()[0];
-            
-
             if (chkJobs == 'Y' || chkJobs == 'y')
             {
                 Console.WriteLine("\n\n\nJob disabled successfully\n\n\n");
 
-                #region MyRegion
-                Console.WriteLine("\nQuery4 is started\n");
-                string Query4 = "select uniqueid,count(uniqueid),datasourceid from tbl_employees_import group by uniqueid,datasourceid having count(uniqueid)>1";
-                SqlDataReader datareader4 = ExecuteQuery(Query4, sqlconnection);
-                if (!datareader4.HasRows)
-                {
-                    while (datareader4.Read())
-                    {
-                        Console.WriteLine(datareader4[0] + "|" + datareader4[1] + "|" + datareader4[2]);
-                    }
-
-                    Console.WriteLine("\n\nQuery4 is executed\n\n");
-                }
-                else
-                {
-                    Console.WriteLine("Error");
-                    Console.ReadLine();
-                }
-                #endregion
+                VerifyingDuplicateData Datachecking = new VerifyingDuplicateData();
+                Datachecking.VerifyDuplicateDataintable(sqlconnection);
 
 
-                #region MyRegion
-                Console.WriteLine("\nQuery5 is started\n");
-                string Query5 = "IF OBJECT_ID('tbl_Employees_Import_Excluded') IS NOT NULL DROP TABLE tbl_Employees_Import_Excluded";
-                SqlDataReader datareader5= ExecuteQuery(Query5, sqlconnection);
-                if (!datareader5.HasRows)
-                {
-                    while (datareader5.Read())
-                    {
-                        Console.WriteLine(datareader5[0]);
-                    }
-                    Console.WriteLine("\n\nQuery5 is Executed\n\n");
-                }
-                else 
-                { 
+                StoredProcedure storedProcedure = new StoredProcedure(); //Stored Procedure Execution
+                storedProcedure.StoredProcedureExecution(sqlconnection);
+                Console.WriteLine(" Both the Stored procedure Executed once successfully ");
 
-                    Console.WriteLine("Error");
-                    Console.ReadLine();
-                }
-                #endregion
+                CountofNewRecords countofNewRecords = new CountofNewRecords(); //count of New Records
+                countofNewRecords.CountNewRecords(sqlconnection);
 
-
-                #region MyRegion
-                Console.WriteLine("\nQuery6 is started\n");
-                string Query6 = "select b.* into tbl_Employees_Import_Excluded from WorkdayIntegratedEmployees a, tbl_employees_import b where me_uniqueID=b.uniqueid and a.datasourceid=b.datasourceid";
-                SqlDataReader datareader6 = ExecuteQuery(Query6, sqlconnection);
-                if (!datareader6.HasRows)
-                {
-                    while (datareader6.Read())
-                    {
-                        Console.WriteLine(datareader6[0] + "|" + datareader6[1]);
-                    }
-                    Console.WriteLine("\n\nQuery6 is Executed\n\n");
-                }
-                else
-                {
-                    Console.WriteLine("Error");
-                    Console.ReadLine();
-                }
-                #endregion
-
-
-                #region MyRegion
-                Console.WriteLine("\nQuery7 is started\n");
-                string Query7 = "DELETE b from WorkdayIntegratedEmployees a, tbl_employees_import b where me_uniqueID=b.uniqueid and a.datasourceid=b.datasourceid";
-                SqlDataReader datareader7 = ExecuteQuery(Query7, sqlconnection);
-                if (!datareader7.HasRows)
-                {
-
-                    while (datareader7.Read())
-                    {
-                        Console.WriteLine(datareader7[0] + "|" + datareader7[1]);
-                    }
-                    Console.WriteLine("\nQuery7 is Executed\n");
-                }
-                else
-                {
-                    Console.WriteLine("Error");
-                    Console.ReadLine();
-                }
-                #endregion
-
-                #region MyRegion
-                //Console.WriteLine("\n stored procedure proc_Pre_Update_Processing started\n");
-                //string Query8 = "exec proc_Pre_Update_Processing";
-                //SqlDataReader datareader8 = ExecuteQuery(Query8, sqlconnection);
-                //while (datareader8.Read())
-                //{
-                //    Console.WriteLine(datareader8[0] + "|" + datareader8[1]);
-                //}
-                //Console.WriteLine("\nstored procedure proc_Pre_Update_Processing is Executed\n");
-                #endregion
-
-                #region MyRegion
-                //Console.WriteLine("\n stored procedure procProcessEmployeeUpdates started\n");
-                //string Query9 = "exec procProcessEmployeeUpdates";
-                //SqlDataReader datareader9 = ExecuteQuery(Query9, sqlconnection);
-                //while (datareader9.Read())
-                //{
-                //    Console.WriteLine(datareader9[0] + "|" + datareader9[1]);
-                //}
-                //Console.WriteLine("\nstored procedure procProcessEmployeeUpdates is Executed\n");
-                #endregion
-
-                #region MyRegion
-                Console.WriteLine("\n count of tbl_Employees_Import_Add is started \n");
-                string Query10 = "select count (*) from tbl_Employees_Import_Add";
-                SqlDataReader datareader10 = ExecuteQuery(Query10, sqlconnection);
-                while (datareader10.Read())
-                {   
-                    Console.WriteLine(datareader10[0]);
-                }
-                Console.WriteLine("\n count of tbl_Employees_Import_Add is completed \n");
-               
-                #endregion
-
-
-                #region MyRegion
-                Console.WriteLine("\n count of tbl_Employees_Import_Add_Deleted is started \n");
-                string Query11 = "select count (*) from tbl_Employees_Import_Add_Deleted";
-                SqlDataReader datareader11 = ExecuteQuery(Query11, sqlconnection);
-                while (datareader11.Read())
-                {
-                    Console.WriteLine(datareader11[0]);
-                }
-                Console.WriteLine("\n count of tbl_Employees_Import_Add_Deleted is completed \n");
-                #endregion
-
-                #region MyRegion
-                Console.WriteLine("\n count of tbl_Employees_Import_Remove is started \n");
-                string Query12 = "select count (*) from tbl_Employees_Import_Remove";
-                SqlDataReader datareader12 = ExecuteQuery(Query12, sqlconnection);
-                while (datareader12.Read())
-                {
-                    Console.WriteLine(datareader12[0]);
-                }
-                Console.WriteLine("\n count of tbl_Employees_Import_Remove is completed \n");
-                #endregion
+                
 
                 #region MyRegion
                 Console.WriteLine("\n distinct(fieldname) of tbl_Employees_Import_Changed is started \n");
@@ -329,13 +78,13 @@ namespace MEHR_Automation
                 {
                     string fieldValue = datareader13["fieldname"].ToString();
                     Console.WriteLine(fieldValue);
-                    
+
                 }
                 Console.WriteLine("\n distinct(fieldname) of tbl_Employees_Import_Changed is completed\n");
                 #endregion
 
 
-                
+
                 int count = 0;
                 while (count < 5)
                 {
@@ -412,7 +161,7 @@ namespace MEHR_Automation
                                 sheet2.Cells[1, i + 1] = datareader15.GetName(i);
                             }
 
-                            
+
                             // Add data to Sheet2
                             int row2 = 2;
                             while (datareader15.Read())
@@ -462,12 +211,6 @@ namespace MEHR_Automation
                     count++;
                 }
 
-                
-
-
-
-
-
 
 
                 sqlconnection.Close();
@@ -477,14 +220,18 @@ namespace MEHR_Automation
                 //ReadExcelFile();
 
                 Console.ReadLine();
-                
-                
-                
+
+
+
 
             }
             else
             {
-                Console.WriteLine("You have not disabled the job.");
+                Console.WriteLine("You have not disabled the job. Please disable the Mentioned jobs to proceed further ");
+                //Console.WriteLine("please type any key to Exit");
+                //Console.ReadLine();
+                //Environment.Exit(0);
+
             }
 
 
@@ -529,28 +276,7 @@ namespace MEHR_Automation
         //    }
         //}
 
-        public static int CountLinesInCsvFile(string filepath)
-        {
-            int count = 0;
-
-            try
-            {
-                using (StreamReader reader = new StreamReader(filepath))
-                {
-                    string line;
-                    while ((line = reader.ReadLine()) != null)
-                    {
-                        count++;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-
-            return count;
-        }
+        
 
 
     }
