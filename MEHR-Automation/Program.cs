@@ -21,6 +21,8 @@ namespace MEHR_Automation
     {
         static void Main(string[] args)
         {
+            // Get the user's directory
+            string userProfileDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             string configuration = ConfigurationManager.ConnectionStrings["Dbcon"].ToString();
             SqlConnection sqlconnection = new SqlConnection(configuration);
             sqlconnection.Open();
@@ -120,7 +122,7 @@ namespace MEHR_Automation
                             }
 
                             // Save Excel workbook
-                            string Pathname = "C:\\Users\\kwr579\\Desktop\\AUTOMATION\\Excel1.xlsx";
+                            string Pathname = @userProfileDirectory + "\\AUTOMATION\\Excel1.xlsx";
                             workbook.SaveAs(Pathname);
                             workbook.Close();
                             excelApp.Quit();
@@ -136,7 +138,7 @@ namespace MEHR_Automation
                             string Query15 = "Select a.orig_epassid,b.epassid,a.orig_first,b.first,a.orig_last,b.last,a.orig_middle,b.middle,a.orig_internet_email,b.internet_email,a.orig_site,b.site from \r\ndbo.tbl_Employees_Import_Changed A inner join dbo.tbl_employees_stage1_Hold B on A.masterid = b.masterid\r\nwhere a.fieldname = 'orig_internet_email'";
                             SqlDataReader datareader15 = ExecuteQuery(Query15, sqlconnection);
 
-                            string existingPath = "C:\\Users\\kwr579\\Desktop\\AUTOMATION\\Excel1.xlsx";
+                            string existingPath = @userProfileDirectory + "\\AUTOMATION\\Excel1.xlsx";
                             Microsoft.Office.Interop.Excel.Application existingApp = new Microsoft.Office.Interop.Excel.Application();
                             existingApp.Visible = true;
                             var existingWorkbook = existingApp.Workbooks.Open(existingPath);

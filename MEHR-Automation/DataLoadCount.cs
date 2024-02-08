@@ -13,8 +13,12 @@ namespace MEHR_Automation
         ExecuteQueries executeQueries = new ExecuteQueries();
         public bool Dataloadfile(SqlConnection sqlconnection)
         {
-            //Read csv file Dataload_77 csv file
-            int lineCount = CountLinesInCsvFile(@"C:\Users\kwr579\Desktop\AUTOMATION\DataLoad_77_AfterTriage.csv");
+
+            string userProfileDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            //Read csv file Dataload_77 csv file2
+            int lineCount = CountLinesInCsvFile(@userProfileDirectory+ "\\AUTOMATION\\DataLoad_77_AfterTriage.csv");
+            Console.WriteLine(userProfileDirectory + "\\AUTOMATION\\DataLoad_77_AfterTriage.csv");
+             
             Console.WriteLine("Number of lines in the file: " + lineCount);
             int comparisioncount = 0;
             string Query3 = "Select count (*), datasource, datasourceid from tbl_Employees_Import group by datasource,datasourceid order by datasourceid";
