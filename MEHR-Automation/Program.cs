@@ -110,101 +110,120 @@ namespace MEHR_Automation
                                 worksheet.Cells[1, i + 1] = datareader14.GetName(i);
                             }
 
-                            // Add data to Excel worksheet
+                            
+
+                            //Add data to Excel worksheet
                             int row = 2;
                             while (datareader14.Read())
                             {
+
+
                                 for (int i = 0; i < datareader14.FieldCount; i++)
                                 {
                                     worksheet.Cells[row, i + 1] = datareader14[i];
+
                                 }
                                 row++;
                             }
+                            
 
                             // Save Excel workbook
-                            string Pathname = @userProfileDirectory + "\\AUTOMATION\\Excel1.xlsx";
+                            string Pathname = @userProfileDirectory + "\\AUTOMATION\\Excel.xlsx";
                             workbook.SaveAs(Pathname);
+                            
+
                             workbook.Close();
                             excelApp.Quit();
 
                             Console.WriteLine($"Excel file created at: {Pathname}");
 
+                            string peopleReportPath = @userProfileDirectory + "\\AUTOMATION\\People_Report_1215.xlsx";
+                            Console.WriteLine(peopleReportPath);
+                            var peopleReportExcelApp = new Microsoft.Office.Interop.Excel.Application();
+                            var peopleReportWorkbook = peopleReportExcelApp.Workbooks.Open(peopleReportPath);
+                            var peopleReportWorksheet = (Worksheet)peopleReportWorkbook.Sheets[1];
+                            var range = peopleReportWorksheet.Range["A:A"];
+                            if (range.Cells.Find(Convert.ToString(datareader14[0]), Type.Missing, XlFindLookIn.xlValues, XlLookAt.xlWhole) != null)
+                            {
+                                Console.WriteLine("Hello, the value is present in the people's report!");
+                            }
+
 
 
                             Console.WriteLine("\n orig_epassid is completed \n");
                             break;
-                        case 2:
-                            Console.WriteLine("\n orig_internet_email is started \n");
-                            string Query15 = "Select a.orig_epassid,b.epassid,a.orig_first,b.first,a.orig_last,b.last,a.orig_middle,b.middle,a.orig_internet_email,b.internet_email,a.orig_site,b.site from \r\ndbo.tbl_Employees_Import_Changed A inner join dbo.tbl_employees_stage1_Hold B on A.masterid = b.masterid\r\nwhere a.fieldname = 'orig_internet_email'";
-                            SqlDataReader datareader15 = ExecuteQuery(Query15, sqlconnection);
+                        //case 2:
+                        //    Console.WriteLine("\n orig_internet_email is started \n");
+                        //    string Query15 = "Select a.orig_epassid,b.epassid,a.orig_first,b.first,a.orig_last,b.last,a.orig_middle,b.middle,a.orig_internet_email,b.internet_email,a.orig_site,b.site from \r\ndbo.tbl_Employees_Import_Changed A inner join dbo.tbl_employees_stage1_Hold B on A.masterid = b.masterid\r\nwhere a.fieldname = 'orig_internet_email'";
+                        //    SqlDataReader datareader15 = ExecuteQuery(Query15, sqlconnection);
 
-                            string existingPath = @userProfileDirectory + "\\AUTOMATION\\Excel1.xlsx";
-                            Microsoft.Office.Interop.Excel.Application existingApp = new Microsoft.Office.Interop.Excel.Application();
-                            existingApp.Visible = true;
-                            var existingWorkbook = existingApp.Workbooks.Open(existingPath);
+                        //    string existingPath = @userProfileDirectory + "\\AUTOMATION\\Excel1.xlsx";
+                        //    Microsoft.Office.Interop.Excel.Application existingApp = new Microsoft.Office.Interop.Excel.Application();
+                        //    existingApp.Visible = true;
+                        //    var existingWorkbook = existingApp.Workbooks.Open(existingPath);
 
-                            // Get or create Sheet2
-                            Worksheet sheet2;
-                            try
-                            {
-                                // Try to get Sheet2 by index
-                                sheet2 = (Worksheet)existingWorkbook.Sheets[2];
-                            }
-                            catch
-                            {
-                                // If Sheet2 doesn't exist, add it
-                                sheet2 = (Worksheet)existingWorkbook.Sheets.Add(After: existingWorkbook.Sheets[existingWorkbook.Sheets.Count]);
-                                sheet2.Name = "Sheet2";
-                            }
+                        //    // Get or create Sheet2
+                        //    Worksheet sheet2;
+                        //    try
+                        //    {
+                        //        // Try to get Sheet2 by index
+                        //        sheet2 = (Worksheet)existingWorkbook.Sheets[2];
+                        //    }
+                        //    catch
+                        //    {
+                        //        // If Sheet2 doesn't exist, add it
+                        //        sheet2 = (Worksheet)existingWorkbook.Sheets.Add(After: existingWorkbook.Sheets[existingWorkbook.Sheets.Count]);
+                        //        sheet2.Name = "Sheet2";
+                        //    }
 
-                            // Add column headers
-                            for (int i = 0; i < datareader15.FieldCount; i++)
-                            {
-                                sheet2.Cells[1, i + 1] = datareader15.GetName(i);
-                            }
+                        //    // Add column headers
+                        //    for (int i = 0; i < datareader15.FieldCount; i++)
+                        //    {
+                        //        sheet2.Cells[1, i + 1] = datareader15.GetName(i);
+                        //    }
 
 
-                            // Add data to Sheet2
-                            int row2 = 2;
-                            while (datareader15.Read())
-                            {
-                                for (int i = 0; i < datareader15.FieldCount; i++)
-                                {
-                                    sheet2.Cells[row2, i + 1] = datareader15[i];
-                                }
-                                row2++;
-                            }
+                        //    // Add data to Sheet2
+                        //    int row2 = 2;
+                        //    while (datareader15.Read())
+                        //    {
+                        //        for (int i = 0; i < datareader15.FieldCount; i++)
+                        //        {
+                        //            sheet2.Cells[row2, i + 1] = datareader15[i];
+                        //        }
+                        //        row2++;
+                        //    }
 
-                            // Save the existing Excel workbook
-                            existingWorkbook.Save();
-                            existingWorkbook.Close();
-                            existingApp.Quit();
+                        //    // Save the existing Excel workbook
+                        //    existingWorkbook.Save();
+                        //    existingWorkbook.Close();
+                        //    existingApp.Quit();
 
-                            Console.WriteLine($"Excel file updated at: {existingPath}");
-                            Console.WriteLine("\n orig_internet_email is completed \n");
-                            break;
-                        case 3:
-                            Console.WriteLine("\n orig_first is started \n");
-                            string Query16 = "Select a.orig_epassid,b.epassid,a.orig_first,b.first,a.orig_last,b.last,a.orig_middle,b.middle,a.orig_internet_email,b.internet_email,a.orig_site,b.site from \r\ndbo.tbl_Employees_Import_Changed A inner join dbo.tbl_Employees_Stage1_Hold B on A.masterid = b.masterid\r\nwhere a.fieldname = 'orig_first'";
-                            SqlDataReader datareader16 = ExecuteQuery(Query16, sqlconnection);
-                            while (datareader16.Read())
-                            {
-                                Console.WriteLine("Tharun");
-                            }
-                            Console.WriteLine("\n orig_first is completed \n");
-                            break;
-                        case 4:
-                            Console.WriteLine("\n orig_last is started \n");
-                            string Query17 = "Select a.orig_epassid,b.epassid,a.orig_first,b.first,a.orig_last,b.last,a.orig_middle,b.middle,a.orig_internet_email,b.internet_email,a.orig_site,b.site from \r\ndbo.tbl_Employees_Import_Changed A inner join dbo.tbl_Employees_Stage1_Hold B on A.masterid = b.masterid\r\nwhere a.fieldname = 'orig_last'";
-                            SqlDataReader datareader17 = ExecuteQuery(Query17, sqlconnection);
-                            while (datareader17.Read())
-                            {
-                                Console.WriteLine("Kanna Sai");
-                            }
-                            Console.WriteLine("\n orig_last is completed \n");
-                            break;
-                        case 5:
-                            break;
+                        //    Console.WriteLine($"Excel file updated at: {existingPath}");
+                        //    Console.WriteLine("\n orig_internet_email is completed \n");
+                        //    break;
+                        //case 3:
+                        //    Console.WriteLine("\n orig_first is started \n");
+                        //    string Query16 = "Select a.orig_epassid,b.epassid,a.orig_first,b.first,a.orig_last,b.last,a.orig_middle,b.middle,a.orig_internet_email,b.internet_email,a.orig_site,b.site from \r\ndbo.tbl_Employees_Import_Changed A inner join dbo.tbl_Employees_Stage1_Hold B on A.masterid = b.masterid\r\nwhere a.fieldname = 'orig_first'";
+                        //    SqlDataReader datareader16 = ExecuteQuery(Query16, sqlconnection);
+                        //    while (datareader16.Read())
+                        //    {
+                        //        Console.WriteLine("Tharun");
+                        //    }
+                        //    Console.WriteLine("\n orig_first is completed \n");
+                        //    break;
+                        //case 4:
+                        //    Console.WriteLine("\n orig_last is started \n");
+                        //    string Query17 = "Select a.orig_epassid,b.epassid,a.orig_first,b.first,a.orig_last,b.last,a.orig_middle,b.middle,a.orig_internet_email,b.internet_email,a.orig_site,b.site from \r\ndbo.tbl_Employees_Import_Changed A inner join dbo.tbl_Employees_Stage1_Hold B on A.masterid = b.masterid\r\nwhere a.fieldname = 'orig_last'";
+                        //    SqlDataReader datareader17 = ExecuteQuery(Query17, sqlconnection);
+                        //    while (datareader17.Read())
+                        //    {
+                        //        Console.WriteLine("Kanna Sai");
+                        //    }
+                        //    Console.WriteLine("\n orig_last is completed \n");
+                        //    break;
+                        //case 5:
+                        //    break;
                         default:
                             Environment.Exit(0);
                             break;
@@ -212,6 +231,42 @@ namespace MEHR_Automation
                     }
                     count++;
                 }
+
+
+                Console.ReadLine();
+                Console.ReadLine();
+                Console.ReadLine();
+                Console.ReadLine();
+
+                //FIX PROCPROCESS EMPLOYEEUPDATES TO GET RID OF USING THIS PROC
+                storedProcedure.procUpdatetempfixStoredProcedure(sqlconnection);
+                storedProcedure.procPostUpdateStoredProcedure(sqlconnection);  //  have to check this..
+
+
+                MacroQueries macroQueries = new MacroQueries();
+                macroQueries.Add_Counts_by_Datasource(sqlconnection);
+                macroQueries.Changed_Fields_by_DataSource(sqlconnection);
+                macroQueries.Change_NotUpdated_by_DataSource(sqlconnection);
+                macroQueries.AddDeleted_by_DataSource(sqlconnection);
+                macroQueries.Removed_Countby_DataSource(sqlconnection);
+                macroQueries.Check_Email_Types(sqlconnection);
+                macroQueries.Missing_Email_Types(sqlconnection);
+                macroQueries.Coastal_Manager_Duplicates(sqlconnection);
+                macroQueries.Danisco_in_Workday_Duplicates(sqlconnection);
+                macroQueries.Pioneer_D_Group_Match_With_DuPont(sqlconnection);
+                macroQueries.Potential_Duplicates_with_potential_match(sqlconnection);
+                macroQueries.MyAccessID_Duplicates(sqlconnection);
+                macroQueries.Removal_Not_In_Duplicate_Tables(sqlconnection);
+                macroQueries.Email_Duplicates(sqlconnection);
+                macroQueries.Add_Delete_Expatriates(sqlconnection);
+                macroQueries.New_Expatriates(sqlconnection);
+                macroQueries.Removed_Expatriates(sqlconnection);
+                macroQueries.vw_AddCountByDataSource(sqlconnection);
+                macroQueries.vw_RemoveCountByDatasource(sqlconnection);
+
+
+
+
 
 
 
@@ -278,6 +333,25 @@ namespace MEHR_Automation
         //    }
         //}
 
+
+//        Open the people's report Excel file
+//        string peopleReportPath = "C:\\Path\\To\\PeopleReport.xlsx";
+//        var peopleReportExcelApp = new Microsoft.Office.Interop.Excel.Application();
+//        var peopleReportWorkbook = peopleReportExcelApp.Workbooks.Open(peopleReportPath);
+//        var peopleReportWorksheet = (Worksheet)peopleReportWorkbook.Sheets[1];
+
+//        Get the range of values in column A of the people's report Excel sheet
+//        var range = peopleReportWorksheet.Range["A:A"];
+
+//        Check if datareader14[0] is present in column A
+//if (range.Cells.Find(Convert.ToString(datareader14[0]), Type.Missing, XlFindLookIn.xlValues, XlLookAt.xlWhole) != null)
+//{
+//    Console.WriteLine("Hello, the value is present in the people's report!");
+//}
+
+//    Close the people's report Excel file
+//    peopleReportWorkbook.Close();
+//peopleReportExcelApp.Quit();
         
 
 
