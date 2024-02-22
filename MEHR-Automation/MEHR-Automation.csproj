@@ -152,6 +152,11 @@
     <Compile Include="ExecuteQueries.cs" />
     <Compile Include="CountofNewRecords.cs" />
     <Compile Include="MacroQueries.cs" />
+    <Compile Include="OrigEpassId.cs" />
+    <Compile Include="OrigFirst.cs" />
+    <Compile Include="OrigInternetEmail.cs" />
+    <Compile Include="OrigLast.cs" />
+    <Compile Include="OrigMiddle.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StoredProcedure.cs" />
