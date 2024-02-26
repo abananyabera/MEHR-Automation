@@ -18,7 +18,7 @@ namespace MEHR_Automation
         {
             string timeStamp = DateTime.Now.ToString("MMddyyyy");
             string destinationTable1 = "[dbo]. [tbl_employees_stage1_" + timeStamp + "]";
-            string query1 = "select * into" + " " + destinationTable1 + " " + "from [dbo]. [tbl_employees_stage1]";
+            string query = "select * into" + " " + destinationTable1 + " " + "from [dbo]. [tbl_employees_stage1]";
 
 
             // checking the table is already presnet or not if present returns 1 else return 0
@@ -39,7 +39,7 @@ namespace MEHR_Automation
             }
 
             // creates the backuptable 1 if not present else it returns error
-            executeQueries.ExecuteQuery(query1, sqlconnection);
+            executeQueries.ExecuteQuery(query, sqlconnection);
 
 
             int countMainTable = 0;
@@ -60,21 +60,25 @@ namespace MEHR_Automation
 
             if (countMainTable == countMainTableBackup)
             {
-                Console.WriteLine("Backup for tbl_employees_stage1 is successfull");
+                Console.WriteLine("\nBackup for tbl_employees_stage1 is successfull  ");
+                Console.WriteLine("-------------------------------------------------------------");
+                Console.ReadLine();
             }
             else
             {
-                Console.WriteLine("Backup for tbl_employees_stage1 is failed");
+                Console.WriteLine("\nBackup for tbl_employees_stage1 is failed");
+                Console.WriteLine("-------------------------------------------------------------");
+                Console.ReadLine();
             }
 
-            Console.WriteLine("--------------------------------------------------------------------------------------------");
+            
         }
 
         public void takeTableBackup2(SqlConnection sqlconnection)
         {
             string timeStamp2 = DateTime.Now.ToString("MMddyyyy");
             string destinationTable2 = "[dbo]. [tbl_employees_stage1_hold_" + timeStamp2 + "]";
-            string backupquery = "select * into" + " " + destinationTable2 + " " + "from [dbo]. [tbl_employees_stage1_hold]";
+            string query = "select * into" + " " + destinationTable2 + " " + "from [dbo]. [tbl_employees_stage1_hold]";
 
 
             // checking the table is already presnet or not if present returns 1 else return 0
@@ -98,7 +102,7 @@ namespace MEHR_Automation
             }
 
             // creates the backuptable 2 if not present else it returns error
-            executeQueries.ExecuteQuery(backupquery, sqlconnection);
+            executeQueries.ExecuteQuery(query, sqlconnection);
 
 
             int countMainTable2 = 0;
@@ -119,14 +123,18 @@ namespace MEHR_Automation
 
             if (countMainTable2 == countMainTableBackup2)
             {
-                Console.WriteLine("Backup for tbl_employees_stage1_hold is successfull");
+                Console.WriteLine("\nBackup for tbl_employees_stage1_hold is successfull");
+                Console.WriteLine("-------------------------------------------------------------");
+                Console.ReadLine();
             }
             else
             {
-                Console.WriteLine("Backup for tbl_employees_stage1_hold is failed");
+                Console.WriteLine("\nBackup for tbl_employees_stage1_hold is failed");
+                Console.WriteLine("-------------------------------------------------------------");
+                Console.ReadLine();
             }
 
-            Console.WriteLine("--------------------------------------------------------------------------------------------");
+            
         }
         
     }

@@ -15,22 +15,24 @@ namespace MEHR_Automation
         public void VerifyDuplicateDataintable(SqlConnection sqlconnection)
         {
             #region MyRegion
-            Console.WriteLine("\nQuery4 is started\n");
-            string Query4 = "select uniqueid,count(uniqueid),datasourceid from tbl_employees_import group by uniqueid,datasourceid having count(uniqueid)>1";
-            SqlDataReader datareader4 = executeQueries.ExecuteQuery(Query4, sqlconnection);
-            if (!datareader4.HasRows)
+            Console.WriteLine("\n Duplicates verfication is started\n");
+            string Query = "select uniqueid,count(uniqueid),datasourceid from tbl_employees_import group by uniqueid,datasourceid having count(uniqueid)>1";
+            SqlDataReader datareader = executeQueries.ExecuteQuery(Query, sqlconnection);
+            if (!datareader.HasRows)
             {
-                while (datareader4.Read())
+                while (datareader.Read())
                 {
-                    Console.WriteLine(datareader4[0] + "|" + datareader4[1] + "|" + datareader4[2]);
+                    Console.WriteLine(datareader[0] + "|" + datareader[1] + "|" + datareader[2]);
                 }
-
-                Console.WriteLine("\n\nQuery4 is executed\n\n");
+                Console.WriteLine("\n Duplicates verfication is successfull \n");
+                Console.WriteLine("-------------------------------------------------------------");
+                Console.ReadLine();
             }
             else
             {
                 Console.WriteLine(" Not Returning Empty results in current Executing Query");
-                Console.WriteLine("We cannot proceed any further please type any key to Exit");
+                Console.WriteLine("We cannot proceed any further please type any key to Exit"); 
+                Console.WriteLine("-------------------------------------------------------------");
                 Console.ReadLine();
 
                 //Environment.Exit(0);
@@ -39,7 +41,7 @@ namespace MEHR_Automation
 
 
             #region MyRegion
-            Console.WriteLine("\nQuery5 is started\n");
+            Console.WriteLine("\n Duplicates verfication is  started\n");
             string Query5 = "IF OBJECT_ID('tbl_Employees_Import_Excluded') IS NOT NULL DROP TABLE tbl_Employees_Import_Excluded";
             SqlDataReader datareader5 = executeQueries.ExecuteQuery(Query5, sqlconnection);
             if (!datareader5.HasRows)
@@ -48,13 +50,16 @@ namespace MEHR_Automation
                 {
                     Console.WriteLine(datareader5[0]);
                 }
-                Console.WriteLine("\n\nQuery5 is Executed\n\n");
+                Console.WriteLine("\n Duplicates verfication is successfull \n");
+                Console.WriteLine("-------------------------------------------------------------");
+                Console.ReadLine();
             }
             else
             {
 
                 Console.WriteLine(" Not Returning Empty results in current Executing Query");
                 Console.WriteLine("We cannot proceed any further please type any key to Exit");
+                Console.WriteLine("-------------------------------------------------------------");
                 Console.ReadLine();
 
                 //Environment.Exit(0);
@@ -63,7 +68,7 @@ namespace MEHR_Automation
 
 
             #region MyRegion
-            Console.WriteLine("\nQuery6 is started\n");
+            Console.WriteLine("\n Duplicates verfication is started\n");
             string Query6 = "select b.* into tbl_Employees_Import_Excluded from WorkdayIntegratedEmployees a, tbl_employees_import b where me_uniqueID=b.uniqueid and a.datasourceid=b.datasourceid";
             SqlDataReader datareader6 = executeQueries.ExecuteQuery(Query6, sqlconnection);
             if (!datareader6.HasRows)
@@ -72,12 +77,15 @@ namespace MEHR_Automation
                 {
                     Console.WriteLine(datareader6[0] + "|" + datareader6[1]);
                 }
-                Console.WriteLine("\n\nQuery6 is Executed\n\n");
+                Console.WriteLine("\n Duplicates verfication is successfull \n");
+                Console.WriteLine("-------------------------------------------------------------");
+                Console.ReadLine();
             }
             else
             {
                 Console.WriteLine(" Not Returning Empty results in current Executing Query");
                 Console.WriteLine("We cannot proceed any further please type any key to Exit");
+                Console.WriteLine("-------------------------------------------------------------");
                 Console.ReadLine();
 
                 //Environment.Exit(0);
@@ -86,7 +94,7 @@ namespace MEHR_Automation
 
 
             #region MyRegion
-            Console.WriteLine("\nQuery7 is started\n");
+            Console.WriteLine("\n Duplicates verfication is started\n");
             string Query7 = "DELETE b from WorkdayIntegratedEmployees a, tbl_employees_import b where me_uniqueID=b.uniqueid and a.datasourceid=b.datasourceid";
             SqlDataReader datareader7 = executeQueries.ExecuteQuery(Query7, sqlconnection);
             if (!datareader7.HasRows)
@@ -96,14 +104,17 @@ namespace MEHR_Automation
                 {
                     Console.WriteLine(datareader7[0] + "|" + datareader7[1]);
                 }
-                Console.WriteLine("\nQuery7 is Executed\n");
+                Console.WriteLine("\n Duplicates verfication is successfull \n");
+                Console.WriteLine("-------------------------------------------------------------");
+                Console.ReadLine();
             }
             else
             {
                 Console.WriteLine(" Not Returning Empty results in current Executing Query");
                 Console.WriteLine("We cannot proceed any further please type any key to Exit");
+                Console.WriteLine("-------------------------------------------------------------");
                 Console.ReadLine();
-
+                
                 //Environment.Exit(0);
             }
             #endregion

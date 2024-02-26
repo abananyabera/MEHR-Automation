@@ -15,72 +15,93 @@ namespace MEHR_Automation
         public void execQuery(SqlConnection sqlconnection)
         {
             Console.WriteLine("\n orig_epassid is started \n");
-            string Query14 = "Select a.orig_epassid,b.epassid,a.orig_first,b.first,a.orig_last,b.last,a.orig_middle,b.middle,a.orig_internet_email,b.internet_email,a.orig_site,b.site from dbo.tbl_Employees_Import_Changed A inner join dbo.tbl_employees_stage1_Hold B on A.masterid = b.masterid where a.fieldname = 'orig_epassid'";
-            SqlDataReader datareader14 = executeQueries.ExecuteQuery(Query14, sqlconnection);
-
-            //create excel workbook
-            var excelApp = new Microsoft.Office.Interop.Excel.Application();
-            var workbook = excelApp.Workbooks.Add();
-            var worksheet = (Worksheet)workbook.Sheets[1];
-
-            //Add column headers
-            for (int i = 0; i < datareader14.FieldCount; i++)
+            string Query = "Select a.orig_epassid,b.epassid,a.orig_first,b.first,a.orig_last,b.last,a.orig_middle,b.middle,a.orig_internet_email,b.internet_email,a.orig_site,b.site from dbo.tbl_Employees_Import_Changed A inner join dbo.tbl_employees_stage1_Hold B on A.masterid = b.masterid where a.fieldname = 'orig_epassid'";
+            SqlDataReader datareader = executeQueries.ExecuteQuery(Query, sqlconnection);
+            if (datareader.HasRows)
             {
-                worksheet.Cells[1, i + 1] = datareader14.GetName(i);
+
+                //create excel workbook
+                var excelApp = new Microsoft.Office.Interop.Excel.Application();
+                var workbook = excelApp.Workbooks.Add();
+                var worksheet = (Worksheet)workbook.Sheets[1];
+
+                //Add column headers
+                for (int i = 0; i < datareader.FieldCount; i++)
+                {
+                    worksheet.Cells[1, i + 1] = datareader.GetName(i);
+                }
+
+
+
+                //Add data to Excel worksheet
+                int row = 2;
+                while (datareader.Read())
+                {
+                    for (int i = 0; i < datareader.FieldCount; i++)
+                    {
+                        worksheet.Cells[row, i + 1] = datareader[i];
+                    }
+                    row++;
+                }
+
+                // Save Excel workbook
+                string Pathname = @userProfileDirectory + "\\AUTOMATION\\Excel1.xlsx";
+                workbook.SaveAs(Pathname);
+                workbook.Close();
+                excelApp.Quit();
+
+                datareader.Close();
+                datareader = executeQueries.ExecuteQuery(Query, sqlconnection);
+
+                // Search in People_Report_1215.xlsx
+                string peopleReportPath = @userProfileDirectory + "\\AUTOMATION\\People_Report_1215.xlsx";
+
+                var peopleReportExcelApp = new Microsoft.Office.Interop.Excel.Application();
+                var peopleReportWorkbook = peopleReportExcelApp.Workbooks.Open(peopleReportPath);
+                var peopleReportWorksheet = (Worksheet)peopleReportWorkbook.Sheets[1];
+
+                while (datareader.Read()) //Iterate over each value in datareader[0] and perform the search
+                {
+                    var searchValue = Convert.ToString(datareader[0]);
+                    var orig_epassid = Convert.ToString(datareader[0]);
+                    var range = peopleReportWorksheet.Range["A:A"];
+                    var foundCell = range.Cells.Find(searchValue, Type.Missing, XlFindLookIn.xlValues, XlLookAt.xlWhole);
+
+                    if (foundCell != null) // If the value is found, print a message
+                    {
+                        var rowinpeoplereport = foundCell.Row;
+                        var valueFromColumnA = peopleReportWorksheet.Cells[rowinpeoplereport, 1].Value; // Assuming column D is the 4th column (index starts from 1)
+                        Console.WriteLine($"The value '{searchValue}' is present in the people's report at row {rowinpeoplereport} and corresponding value from column D is '{valueFromColumnA}'!");
+                        if (orig_epassid == valueFromColumnA)
+                        {
+                            Console.WriteLine("No Update is Required");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Update Required on the Org_epassid");
+                            string Orig_epassid_Update = "Update Stage1 set Stage1.epassid = hold.epassid\r\nfrom tbl_employees_stage1 as stage1\r\njoin tbl_Employees_Stage1_Hold hold on stage1.masterid = hold.masterid \r\nwhere stage1.epassid in ('" + datareader[0] + "')";
+                            SqlDataReader datareader_Update_epassid = executeQueries.ExecuteQuery(Orig_epassid_Update, sqlconnection);
+                            Console.WriteLine("Org_epassid is updated");
+
+                        }
+
+                    }
+                    else
+                    {
+                        Console.WriteLine($"The value '{searchValue}' is not present in the people's report.");
+                    }
+                }
+
+                // Close the workbook and quit Excel application
+                peopleReportWorkbook.Close();
+                peopleReportExcelApp.Quit();
+
+                Console.WriteLine("\n orig_epassid is completed ");
             }
-
-
-
-            //Add data to Excel worksheet
-            int row = 2;
-            while (datareader14.Read())
+            else
             {
-                for (int i = 0; i < datareader14.FieldCount; i++)
-                {
-                    worksheet.Cells[row, i + 1] = datareader14[i];
-                }
-                row++;
+                Console.WriteLine("\n orig_epassid is completed with out generating the Excel because of Query Returning Empty.");
             }
-
-            // Save Excel workbook
-            string Pathname = @userProfileDirectory + "\\AUTOMATION\\Excel1.xlsx";
-            workbook.SaveAs(Pathname);
-            workbook.Close();
-            excelApp.Quit();
-            //Console.WriteLine($"Excel file created at: {excelPath}");
-
-            datareader14.Close();
-            datareader14 = executeQueries.ExecuteQuery(Query14, sqlconnection);
-                
-            // Search in People_Report_1215.xlsx
-            string peopleReportPath = @userProfileDirectory + "\\AUTOMATION\\People_Report_1215.xlsx";
-            Console.WriteLine(peopleReportPath);
-
-            var peopleReportExcelApp = new Microsoft.Office.Interop.Excel.Application();
-            var peopleReportWorkbook = peopleReportExcelApp.Workbooks.Open(peopleReportPath);
-            var peopleReportWorksheet = (Worksheet)peopleReportWorkbook.Sheets[1];
-
-            while (datareader14.Read()) //Iterate over each value in datareader[0] and perform the search
-            {
-                var searchValue = Convert.ToString(datareader14[0]);
-                var range = peopleReportWorksheet.Range["A:A"];
-                var foundCell = range.Cells.Find(searchValue, Type.Missing, XlFindLookIn.xlValues, XlLookAt.xlWhole);
-
-                if (foundCell != null) // If the value is found, print a message
-                {
-                    Console.WriteLine($"The value '{searchValue}' is present in the people's report at row {foundCell.Row}!");
-                }
-                else
-                {
-                    Console.WriteLine($"The value '{searchValue}' is not present in the people's report.");
-                }
-            }
-
-            // Close the workbook and quit Excel application
-            peopleReportWorkbook.Close();
-            peopleReportExcelApp.Quit();
-
-            Console.WriteLine("\n orig_epassid is completed \n");
            
         }
     }
