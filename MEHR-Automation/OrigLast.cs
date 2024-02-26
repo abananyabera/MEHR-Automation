@@ -15,84 +15,102 @@ namespace MEHR_Automation
         public void execQuery(SqlConnection sqlconnection)
         {
             Console.WriteLine("\n orig_last is started \n");
-            string Query17 = "Select a.orig_epassid,b.epassid,a.orig_first,b.first,a.orig_last,b.last,a.orig_middle,b.middle,a.orig_internet_email,b.internet_email,a.orig_site,b.site from \r\ndbo.tbl_Employees_Import_Changed A inner join dbo.tbl_Employees_Stage1_Hold B on A.masterid = b.masterid\r\nwhere a.fieldname = 'orig_last'";
-            SqlDataReader datareader17 = executeQueries.ExecuteQuery(Query17, sqlconnection);
-
-            string existingPath4 = @userProfileDirectory + "\\AUTOMATION\\Excel1.xlsx";
-            Microsoft.Office.Interop.Excel.Application existingApp4 = new Microsoft.Office.Interop.Excel.Application();
-            //existingApp.Visible = true;
-            var existingWorkbook4 = existingApp4.Workbooks.Open(existingPath4);
-
-            // Get or create Sheet2
-            Worksheet sheet4;
-            try
+            string Query = "Select a.orig_epassid,b.epassid,a.orig_first,b.first,a.orig_last,b.last,a.orig_middle,b.middle,a.orig_internet_email,b.internet_email,a.orig_site,b.site from \r\ndbo.tbl_Employees_Import_Changed A inner join dbo.tbl_Employees_Stage1_Hold B on A.masterid = b.masterid\r\nwhere a.fieldname = 'orig_last'";
+            SqlDataReader datareader = executeQueries.ExecuteQuery(Query, sqlconnection);
+            if (datareader.HasRows)
             {
-                sheet4 = (Worksheet)existingWorkbook4.Sheets[4];
-            }
-            catch
-            {
-                // If Sheet3 doesn't exist, add it
-                sheet4 = (Worksheet)existingWorkbook4.Sheets.Add(After: existingWorkbook4.Sheets[existingWorkbook4.Sheets.Count]);
-                sheet4.Name = "orig_last";
-            }
 
-            // Add column headers
-            for (int i = 0; i < datareader17.FieldCount; i++)
-            {
-                sheet4.Cells[1, i + 1] = datareader17.GetName(i);
-            }
+                string existingPath = @userProfileDirectory + "\\AUTOMATION\\Excel1.xlsx";
+                Microsoft.Office.Interop.Excel.Application existingApp = new Microsoft.Office.Interop.Excel.Application();
+                //existingApp.Visible = true;
+                var existingWorkbook = existingApp.Workbooks.Open(existingPath);
 
-
-            // Add data to Sheet4
-            int row4 = 2;
-            while (datareader17.Read())
-            {
-                for (int i = 0; i < datareader17.FieldCount; i++)
+                // Get or create Sheet2
+                Worksheet sheet;
+                try
                 {
-                    sheet4.Cells[row4, i + 1] = datareader17[i];
+                    sheet = (Worksheet)existingWorkbook.Sheets[4];
                 }
-                row4++;
+                catch
+                {
+                    // If Sheet3 doesn't exist, add it
+                    sheet = (Worksheet)existingWorkbook.Sheets.Add(After: existingWorkbook.Sheets[existingWorkbook.Sheets.Count]);
+                    sheet.Name = "orig_last";
+                }
+
+                // Add column headers
+                for (int i = 0; i < datareader.FieldCount; i++)
+                {
+                    sheet.Cells[1, i + 1] = datareader.GetName(i);
+                }
+
+
+                // Add data to Sheet4
+                int row = 2;
+                while (datareader.Read())
+                {
+                    for (int i = 0; i < datareader.FieldCount; i++)
+                    {
+                        sheet.Cells[row, i + 1] = datareader[i];
+                    }
+                    row++;
+                }
+
+                // Save the existing Excel workbook
+                existingWorkbook.Save();
+                existingWorkbook.Close();
+                existingApp.Quit();
+
+                datareader.Close();
+                datareader = executeQueries.ExecuteQuery(Query, sqlconnection);
+
+                // Search in People_Report_1215.xlsx
+                string peopleReportPath = @userProfileDirectory + "\\AUTOMATION\\People_Report_1215.xlsx";
+                var peopleReportExcelApp = new Microsoft.Office.Interop.Excel.Application();
+                var peopleReportWorkbook = peopleReportExcelApp.Workbooks.Open(peopleReportPath);
+                var peopleReportWorksheet = (Worksheet)peopleReportWorkbook.Sheets[1];
+                while (datareader.Read()) // Iterate over each value in datareader[0] and perform the search
+                {
+                    var searchValue = Convert.ToString(datareader[0]); // Assuming the index is 0, change it if needed
+                    var orig_last = Convert.ToString(datareader[4]);
+                    var range = peopleReportWorksheet.Range["A:D"]; // Adjust range to cover columns A to D
+                    var foundCell = range.Cells.Find(searchValue, Type.Missing, XlFindLookIn.xlValues, XlLookAt.xlWhole);
+
+                    if (foundCell != null) // If the value is found, retrieve corresponding value from column D
+                    {
+                        var rowinpeoplereport = foundCell.Row;
+                        var valueFromColumnD = peopleReportWorksheet.Cells[rowinpeoplereport, 4].Value; // Assuming column D is the 4th column (index starts from 1)
+                        Console.WriteLine($"The value '{searchValue}' is present in the people's report at row {rowinpeoplereport} and corresponding value from column D is '{valueFromColumnD}'!");
+                        if (orig_last == valueFromColumnD)
+                        {
+                            Console.WriteLine("No Update is Required");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Update Required on the Org_last");
+                            string Orig_last_Update = "Update Stage1 set Stage1.last = hold.last\r\nfrom tbl_employees_stage1 as stage1\r\njoin tbl_Employees_Stage1_Hold hold on stage1.masterid = hold.masterid \r\nwhere stage1.epassid in ('" + datareader[0] + "')";
+                            SqlDataReader datareader_Update_last = executeQueries.ExecuteQuery(Orig_last_Update, sqlconnection);
+                            Console.WriteLine("Org_last is updated");
+
+                        }
+
+                    }
+                    else
+                    {
+                        Console.WriteLine($"The value '{searchValue}' is not present in the people's report.");
+                    }
+                }
+
+                // Close the workbook and quit Excel application
+                peopleReportWorkbook.Close();
+                peopleReportExcelApp.Quit();
+
+                Console.WriteLine("\n orig_last is completed");
             }
-
-            // Save the existing Excel workbook
-            existingWorkbook4.Save();
-            existingWorkbook4.Close();
-            existingApp4.Quit();
-
-            Console.WriteLine($"Excel file updated at: {existingPath4}");
-
-            datareader17.Close();
-            datareader17 = executeQueries.ExecuteQuery(Query17, sqlconnection);
-
-            // Search in People_Report_1215.xlsx
-            string peopleReportPath4 = @userProfileDirectory + "\\AUTOMATION\\People_Report_1215.xlsx";
-            Console.WriteLine(peopleReportPath4);
-            var peopleReportExcelApp4 = new Microsoft.Office.Interop.Excel.Application();
-            var peopleReportWorkbook4 = peopleReportExcelApp4.Workbooks.Open(peopleReportPath4);
-            var peopleReportWorksheet4 = (Worksheet)peopleReportWorkbook4.Sheets[1];
-            while (datareader17.Read()) // Iterate over each value in datareader[0] and perform the search
+            else
             {
-                var searchValue = Convert.ToString(datareader17[0]); // Assuming the index is 0, change it if needed
-                var range = peopleReportWorksheet4.Range["A:D"]; // Adjust range to cover columns A to D
-                var foundCell = range.Cells.Find(searchValue, Type.Missing, XlFindLookIn.xlValues, XlLookAt.xlWhole);
-
-                if (foundCell != null) // If the value is found, retrieve corresponding value from column D
-                {
-                    var rowinpeoplereport4 = foundCell.Row;
-                    var valueFromColumnD = peopleReportWorksheet4.Cells[rowinpeoplereport4, 4].Value; // Assuming column D is the 4th column (index starts from 1)
-                    Console.WriteLine($"The value '{searchValue}' is present in the people's report at row {rowinpeoplereport4} and corresponding value from column D is '{valueFromColumnD}'!");
-                }
-                else
-                {
-                    Console.WriteLine($"The value '{searchValue}' is not present in the people's report.");
-                }
+                Console.WriteLine("\n orig_last is completed with out generating the Excel because of Query Returning Empty.");
             }
-
-            // Close the workbook and quit Excel application
-            peopleReportWorkbook4.Close();
-            peopleReportExcelApp4.Quit();
-
-            Console.WriteLine("\n orig_last is completed \n");
         }
     }
 }

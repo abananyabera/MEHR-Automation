@@ -21,30 +21,36 @@ namespace MEHR_Automation
                 Console.WriteLine(datareader[0] + "|" + datareader[1] + datareader[2] + "|" + datareader[3]);
             }
             Console.WriteLine("\n Add_Counts_by_Datasource MacroQueries is compl .\n");
+            Console.WriteLine("-------------------------------------------------------------");
+            Console.ReadLine();
         }
 
         public void Changed_Fields_by_DataSource(SqlConnection sqlconnection)
         {
             Console.WriteLine("\n 2.Changed_Fields_by_DataSource MacroQuery is started for Execution.\n");
-            string Query = "SELECT Count(dbo.tbl_Employees_Import_Changed.masterid) AS CountOfmasterid, \r\ndbo.tbl_Employees_Import_Changed.fieldname, dbo.tbl_Datasources.datasource, dbo.tbl_Employees_Import_Changed.datasourceid\r\nFROM dbo.tbl_Employees_Import_Changed \r\nINNER JOIN dbo.tbl_Datasources \r\nON dbo.tbl_Employees_Import_Changed.datasourceid = dbo.tbl_Datasources.datasourceid\r\nWHERE (((dbo.tbl_Employees_Import_Changed.fieldname) Not In ('orig_state','orig_platform','orig_country','orig_region' ,'orig_division','orig_expatriate')))\r\nGROUP BY dbo.tbl_Employees_Import_Changed.fieldname, dbo.tbl_Datasources.datasource, dbo.tbl_Employees_Import_Changed.datasourceid\r\nORDER BY Count(dbo.tbl_Employees_Import_Changed.masterid) DESC;\r\n";
+            string Query = "SELECT Count(dbo.tbl_Employees_Import_Changed.masterid) AS CountOfmasterid, \r\ndbo.tbl_Employees_Import_Changed.fieldname, dbo.tbl_Datasources.datasource, dbo.tbl_Employees_Import_Changed.datasourceid\r\nFROM dbo.tbl_Employees_Import_Changed \r\nINNER JOIN dbo.tbl_Datasources \r\nON dbo.tbl_Employees_Import_Changed.datasourceid = dbo.tbl_Datasources.datasourceid\r\nWHERE (((dbo.tbl_Employees_Import_Changed.fieldname) Not In ('orig_state','orig_platform','orig_country','orig_region' ,'orig_division','orig_expatriate')))\r\nGROUP BY dbo.tbl_Employees_Import_Changed.fieldname, dbo.tbl_Datasources.datasource, dbo.tbl_Employees_Import_Changed.datasourceid\r\nORDER BY Count(dbo.tbl_Employees_Import_Changed.masterid) DESC;";
             SqlDataReader datareader = executeQueries.ExecuteQuery(Query, sqlconnection);
             while (datareader.Read())
             {
                 Console.WriteLine(datareader[0] + "|" + datareader[1] + datareader[2] + "|" + datareader[3]);
             }
             Console.WriteLine("\n Changed_Fields_by_DataSource MacroQueries is completed .\n");
+            Console.WriteLine("-------------------------------------------------------------");
+            Console.ReadLine();
         }
 
         public void Change_NotUpdated_by_DataSource(SqlConnection sqlconnection)
         {
             Console.WriteLine("\n 3.Change_NotUpdated_by_DataSource MacroQuery is started for Execution.\n");
-            string Query = "SELECT Count(dbo.tbl_Employees_Import_Changed_Not_Updated.masterid) AS CountOfmasterid, \r\ndbo.tbl_Employees_Import_Changed_Not_Updated.fieldname, dbo.tbl_Datasources.datasourceid, dbo.tbl_Datasources.datasource\r\nFROM dbo.tbl_Employees_Import_Changed_Not_Updated  \r\nINNER JOIN dbo.tbl_Datasources \r\nON dbo.tbl_Employees_Import_Changed_Not_Updated.datasourceid = dbo.tbl_Datasources.datasourceid\r\nGROUP BY dbo.tbl_Employees_Import_Changed_Not_Updated.fieldname, dbo.tbl_Datasources.datasourceid,\r\ndbo.tbl_Datasources.datasource\r\nORDER BY Count(dbo.tbl_Employees_Import_Changed_Not_Updated.masterid) DESC;";
+            string Query = "SELECT Count(dbo.tbl_Employees_Import_Changed_Not_Updated.masterid) AS CountOfmasterid, \r\ndbo.tbl_Employees_Import_Changed_Not_Updated.fieldname, dbo.tbl_Datasources.datasourceid, dbo.tbl_Datasources.datasource\r\nFROM dbo.tbl_Employees_Import_Changed_Not_Updated \r\nINNER JOIN dbo.tbl_Datasources \r\nON dbo.tbl_Employees_Import_Changed_Not_Updated.datasourceid = dbo.tbl_Datasources.datasourceid\r\nGROUP BY dbo.tbl_Employees_Import_Changed_Not_Updated.fieldname, dbo.tbl_Datasources.datasourceid,\r\ndbo.tbl_Datasources.datasource\r\nORDER BY Count(dbo.tbl_Employees_Import_Changed_Not_Updated.masterid) DESC;";
             SqlDataReader datareader = executeQueries.ExecuteQuery(Query, sqlconnection);
             while (datareader.Read())
             {
                 Console.WriteLine(datareader[0] + "|" + datareader[1] + datareader[2] + "|" + datareader[3]);
             }
-            Console.WriteLine("\n Change_NotUpdated_by_DataSourceMacroQueries is completed .\n");
+            Console.WriteLine("\n Change_NotUpdated_by_DataSource MacroQueries is completed .\n");
+            Console.WriteLine("-------------------------------------------------------------");
+            Console.ReadLine();
         }
 
         public void AddDeleted_by_DataSource(SqlConnection sqlconnection)
@@ -57,30 +63,49 @@ namespace MEHR_Automation
                 Console.WriteLine(datareader[0] + "|" + datareader[1]);
             }
             Console.WriteLine("\nAddDeleted_by_DataSource MacroQueries is completed.\n");
+            Console.WriteLine("-------------------------------------------------------------");
+            Console.ReadLine();
         }
 
         public void Removed_Countby_DataSource(SqlConnection sqlconnection)
         {
             Console.WriteLine("\n 5.Removed_Countby_DataSource MacroQuery is started for Execution.\n");
-            string Query = "with dsCount_Remove\r\nas\r\n(\r\nSELECT Count(dbo.tbl_Employees_Import_Remove.masterid) AS CountOfmasterid, dbo.tbl_Employees_Import_Remove.datasourceid, dbo.tbl_Datasources.datasource\r\nFROM dbo.tbl_Employees_Import_Remove INNER JOIN dbo.tbl_Datasources ON dbo.tbl_Employees_Import_Remove.datasourceid = dbo.tbl_Datasources.datasourceid\r\nGROUP BY dbo.tbl_Employees_Import_Remove.datasourceid, dbo.tbl_Datasources.datasource\r\n--ORDER BY Count(dbo.tbl_Employees_Import_Remove.masterid) DESC\r\n), Stage1_count_bydatasource\r\nas\r\n(\r\nSELECT Count(dbo.tbl_Employees_Stage1.masterid) AS CountOfmasterid, dbo.tbl_Employees_Stage1.datasourceid, dbo.tbl_Datasources.datasource\r\nFROM dbo.tbl_Employees_Stage1 INNER JOIN dbo.tbl_Datasources ON dbo.tbl_Employees_Stage1.datasourceid = dbo.tbl_Datasources.datasourceid\r\nWHERE dbo.tbl_Employees_Stage1.deleted=0 AND dbo.tbl_Employees_Stage1.removed=0\r\nGROUP BY dbo.tbl_Employees_Stage1.datasourceid, dbo.tbl_Datasources.datasource\r\n)\r\nSELECT Removecount.CountOfmasterid AS Removed, Stage1count.CountOfmasterid AS [Total active], Stage1count.datasourceid, Removecount.datasource, Round((removecount.Countofmasterid/stage1count.countofmasterid)*100,2) AS [Percent reduction]\r\nFROM dscount_Remove AS Removecount INNER JOIN Stage1_count_bydatasource AS Stage1count ON Removecount.datasourceid = Stage1count.datasourceid\r\nORDER BY Round((removecount.Countofmasterid/stage1count.countofmasterid)*100,2) DESC;\r\n\r\n";
+            string Query = "with dsCount_Remove\r\nas\r\n(\r\nSELECT Count(dbo.tbl_Employees_Import_Remove.masterid) AS CountOfmasterid, dbo.tbl_Employees_Import_Remove.datasourceid, dbo.tbl_Datasources.datasource\r\nFROM dbo.tbl_Employees_Import_Remove INNER JOIN dbo.tbl_Datasources ON dbo.tbl_Employees_Import_Remove.datasourceid = dbo.tbl_Datasources.datasourceid\r\nGROUP BY dbo.tbl_Employees_Import_Remove.datasourceid, dbo.tbl_Datasources.datasource\r\n--ORDER BY Count(dbo.tbl_Employees_Import_Remove.masterid) DESC\r\n), Stage1_count_bydatasource\r\nas\r\n(\r\nSELECT Count(dbo.tbl_Employees_Stage1.masterid) AS CountOfmasterid, dbo.tbl_Employees_Stage1.datasourceid, dbo.tbl_Datasources.datasource\r\nFROM dbo.tbl_Employees_Stage1 INNER JOIN dbo.tbl_Datasources ON dbo.tbl_Employees_Stage1.datasourceid = dbo.tbl_Datasources.datasourceid\r\nWHERE dbo.tbl_Employees_Stage1.deleted=0 AND dbo.tbl_Employees_Stage1.removed=0\r\nGROUP BY dbo.tbl_Employees_Stage1.datasourceid, dbo.tbl_Datasources.datasource\r\n)\r\nSELECT Removecount.CountOfmasterid AS Removed, Stage1count.CountOfmasterid AS [Total active], Stage1count.datasourceid, Removecount.datasource, Round((removecount.Countofmasterid/stage1count.countofmasterid)*100,2) AS [Percent reduction]\r\nFROM dscount_Remove AS Removecount INNER JOIN Stage1_count_bydatasource AS Stage1count ON Removecount.datasourceid = Stage1count.datasourceid\r\nORDER BY Round((removecount.Countofmasterid/stage1count.countofmasterid)*100,2) DESC;\r\n";
             SqlDataReader datareader = executeQueries.ExecuteQuery(Query, sqlconnection);
             while (datareader.Read())
             {
                 Console.WriteLine(datareader[0] + "|" + datareader[1] + datareader[2] + "|" + datareader[3] + "|" + datareader[4]);
             }
             Console.WriteLine("\nRemoved_Countby_DataSource MacroQueries is completed.\n");
+            Console.WriteLine("-------------------------------------------------------------");
+            Console.ReadLine();
         }
 
         public void Check_Email_Types(SqlConnection sqlconnection) 
         {
             Console.WriteLine("\n 6.Check_Email_Types MacroQuery is started for Execution.\n");
-            string Query = "SELECT dbo.tbl_employees_stage1.epassid,dbo.tbl_employees_stage1.First, dbo.tbl_employees_stage1.middle,\r\n  \tdbo.tbl_employees_stage1.Last, dbo.tbl_employees_stage1.internet_email, \r\n  \tdbo.tbl_employees_stage1.email_type_id,  \r\n  \tdbo.tbl_employees_stage1.datasourceid\r\n     \tFROM dbo.tbl_employees_stage1\r\n     \tWHERE (((dbo.tbl_employees_stage1.active)=0) AND \r\n    \t(CharIndex([last],[internet_email],1)=0 )\r\nAND (CharIndex([first],[internet_email],1)=0) AND \r\n     \t((dbo.tbl_employees_stage1.removed)=0)\r\nAND ((dbo.tbl_employees_stage1.deleted)=0))\r\nOR (((dbo.tbl_employees_stage1.internet_email)<>'') AND ((dbo.tbl_employees_stage1.email_type_id)<>1))\r\nand dbo.tbl_employees_stage1.datasourceid not in (7,9)\r\nORDER BY dbo.tbl_employees_stage1.internet_email;";
+            string Query = "SELECT dbo.tbl_employees_stage1.epassid,dbo.tbl_employees_stage1.First, dbo.tbl_employees_stage1.middle,\r\n  \tdbo.tbl_employees_stage1.Last, dbo.tbl_employees_stage1.internet_email, \r\n  \tdbo.tbl_employees_stage1.email_type_id,  \r\n  \tdbo.tbl_employees_stage1.datasourceid\r\n     \tFROM dbo.tbl_employees_stage1\r\n     \tWHERE (((dbo.tbl_employees_stage1.active)=0) AND \r\n    \t(CharIndex([last],[internet_email],1)=0)\r\nAND (CharIndex([first],[internet_email],1)=0) AND \r\n     \t((dbo.tbl_employees_stage1.removed)=0)\r\nAND ((dbo.tbl_employees_stage1.deleted)=0))\r\nOR (((dbo.tbl_employees_stage1.internet_email)<>'') AND ((dbo.tbl_employees_stage1.email_type_id)<>1))\r\nand dbo.tbl_employees_stage1.datasourceid not in (7,9)\r\nORDER BY dbo.tbl_employees_stage1.internet_email;";
             SqlDataReader datareader = executeQueries.ExecuteQuery(Query, sqlconnection);
-            while (datareader.Read())
+            if (!datareader.HasRows)
             {
-                Console.WriteLine(datareader[0] + "|" + datareader[1] + datareader[2] + "|" + datareader[3] + "|" + datareader[4] + "|" + datareader[5] + "|" + datareader[6]);
+                while (datareader.Read())
+                {
+                    Console.WriteLine(datareader[0] + "|" + datareader[1] + datareader[2] + "|" + datareader[3] + "|" + datareader[4] + "|" + datareader[5] + "|" + datareader[6]);
+                }
+                Console.WriteLine("\nCheck_Email_Types MacroQueries is completed.\n");
+                Console.WriteLine("-------------------------------------------------------------");
+                Console.ReadLine();
             }
-            Console.WriteLine("\nCheck_Email_Types MacroQueries is completed.\n");
+            else
+            {
+                while (datareader.Read())
+                {
+                    Console.WriteLine(datareader[0] + "|" + datareader[1] + datareader[2] + "|" + datareader[3] + "|" + datareader[4] + "|" + datareader[5] + "|" + datareader[6]);
+                }
+                Console.WriteLine("The data is present need to perform some operation");
+                Console.WriteLine("-------------------------------------------------------------");
+                Console.ReadLine();
+            }
         }
 
         public void Missing_Email_Types(SqlConnection sqlconnection) 

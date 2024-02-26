@@ -28,16 +28,17 @@ namespace MEHR_Automation
             OrigFirst origFirst = new OrigFirst();
             OrigLast origLast = new OrigLast();
             OrigMiddle origMiddle = new OrigMiddle();
-           
+            Console.WriteLine("****  MEHR DAY 2  ACTIVITY AUTOMATION  ****");
+            Console.ReadLine();
+            
             // Get the user's directory
             string userProfileDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             string configuration = ConfigurationManager.ConnectionStrings["Dbcon"].ToString();
             SqlConnection sqlconnection = new SqlConnection(configuration);
             sqlconnection.Open();
-            Console.WriteLine("Connection is successfull");
-            //execute commands
-            Console.WriteLine("--------------------------------------------------------------------------------------------");
-
+            Console.WriteLine("-------  DataBase Connection is successfull  --------");
+            Console.ReadLine();
+           
 
             tablebackup tableBackup = new tablebackup();
             tableBackup.takeTableBackup1(sqlconnection);//TableBackup1
@@ -49,23 +50,28 @@ namespace MEHR_Automation
             bool DataLoadcountcomparision = dataLoadCount.Dataloadfile(sqlconnection);
             if(DataLoadcountcomparision == true)
             {
-                Console.WriteLine("DataLoad_77_After_triage file count and Query count is Equal.");
+                Console.WriteLine("\nDataLoad_77_After_triage file count and Query count is Equal.");
+                Console.WriteLine("-------------------------------------------------------------");
+                Console.ReadLine();
             }
             else
             {
-                Console.WriteLine("DataLoad_77_After_triage file count and Query count is not Equal.");
+                Console.WriteLine("\nDataLoad_77_After_triage file count and Query count is not Equal.");
                 Console.WriteLine("We cannot proceed any further please type any key to Exit");
+                Console.WriteLine("-------------------------------------------------------------");
                 Console.ReadLine();
 
                 //Environment.Exit(0);
             }
+            
 
-
-            Console.WriteLine("Please Disable the jobs: \n 1. UserID Synch Job \n 2. Modification Synch Job \n Please press Y to continue");
+            Console.WriteLine("Please Disable the jobs Manually : \n 1. UserID Synch Job \n 2. Modification Synch Job \n Please press Y to continue");
             char chkJobs = Console.ReadLine()[0];
             if (chkJobs == 'Y' || chkJobs == 'y')
             {
-                Console.WriteLine("\n\n\nJob disabled successfully\n\n\n");
+                Console.WriteLine("\n UserID Synch and Modification Synch Jobs are disabled successfully");
+                Console.WriteLine("-------------------------------------------------------------");
+                Console.ReadLine();
 
                 VerifyingDuplicateData Datachecking = new VerifyingDuplicateData();
                 Datachecking.VerifyDuplicateDataintable(sqlconnection);
@@ -73,27 +79,18 @@ namespace MEHR_Automation
 
                 StoredProcedure storedProcedure = new StoredProcedure(); //Stored Procedure Execution
                 storedProcedure.StoredProcedureExecution(sqlconnection);
-                Console.WriteLine(" Both the Stored procedure Executed once successfully ");
+                Console.WriteLine("\n proc_Pre_Update_Processing and procProcessEmployeeUpdates Stored procedure are Executed once successfully ");
+                Console.WriteLine("-------------------------------------------------------------");
+                Console.ReadLine();
 
                 CountofNewRecords countofNewRecords = new CountofNewRecords(); //count of New Records
                 countofNewRecords.CountNewRecords(sqlconnection);
 
-                
 
-                #region MyRegion
-                Console.WriteLine("\n distinct(fieldname) of tbl_Employees_Import_Changed is started \n");
-                string Query13 = "Select distinct(fieldname) from tbl_Employees_Import_Changed";
-                SqlDataReader datareader13 = ExecuteQuery(Query13, sqlconnection);
-                while (datareader13.Read())
-                {
-                    string fieldValue = datareader13["fieldname"].ToString();
-                    Console.WriteLine(fieldValue);
-
-                }
-                Console.WriteLine("\n distinct(fieldname) of tbl_Employees_Import_Changed is completed\n");
-                #endregion
-
-
+                ImportChanged importChanged = new ImportChanged();
+                importChanged.Import_Changed(sqlconnection);
+                Console.WriteLine("-------------------------------------------------------------");
+                Console.ReadLine();
 
                 int count = 0;
                 while (count < 5)
@@ -104,21 +101,26 @@ namespace MEHR_Automation
                     {
                         case 1:
                             origEpassId.execQuery(sqlconnection);
+                            Console.WriteLine("-------------------------------------------------------------");
                             break;
 
                         case 2:
                             origInternetEmail.execQuery(sqlconnection);
+                            Console.WriteLine("-------------------------------------------------------------");
                             break;
 
                         case 3:
                             origFirst.execQuery(sqlconnection);
+                            Console.WriteLine("-------------------------------------------------------------");
                             break;
                         case 4:
                             origLast.execQuery(sqlconnection);
+                            Console.WriteLine("-------------------------------------------------------------");
                             break;
 
                         case 5:
-                            origMiddle.execQuery(sqlconnection);                                                                        
+                            origMiddle.execQuery(sqlconnection);
+                            Console.WriteLine("-------------------------------------------------------------");
                             break;
 
                         default:
@@ -132,105 +134,22 @@ namespace MEHR_Automation
 
                 Console.ReadLine();
 
-                Console.WriteLine("\n distinct(fieldname) of tbl_Employees_Import_Not_Changed is started \n");
-                string Query19 = "Select distinct(fieldname) from tbl_Employees_Import_Changed_Not_Updated";
-                SqlDataReader datareader19 = ExecuteQuery(Query19, sqlconnection);
-                while (datareader19.Read())
-                {
-                    string fieldValue = datareader19["fieldname"].ToString();
-                    Console.WriteLine(fieldValue);
-
-                }
-                Console.WriteLine("\n distinct(fieldname) of tbl_Employees_Import_Not_Changed is completed\n");
-
-
+                ImportNotChanged importNotChanged = new ImportNotChanged();
+                importNotChanged.Import_Not_Changed(sqlconnection);
+                Console.WriteLine("-------------------------------------------------------------");
+                Console.ReadLine();
 
                 int count1 = 0;
                 while (count1 < 1)
                 {
-                    Console.WriteLine("select the fieldname that need to be executed  \n 1.orig_internet_email ");
-                    int select_Import_changed = int.Parse(Console.ReadLine());
-                    switch (select_Import_changed)
+                    Console.WriteLine("select the fieldname that need to be executed  \n 1.orig_internetemail_import_notchanged ");
+                    int select_Import_Not_changed = int.Parse(Console.ReadLine());
+                    switch (select_Import_Not_changed)
                     {
                         case 1:
-                            Console.WriteLine("\n orig_internet_email_Import_Not_Changed is started \n");
-                            string Query15 = "Select a.orig_epassid,b.epassid,a.orig_first,b.first,a.orig_last,b.last,a.orig_middle,b.middle,a.orig_internet_email,b.internet_email,a.orig_site,b.site from \r\ndbo.tbl_Employees_Import_Changed_Not_Updated A inner join dbo.tbl_employees_stage1 B on A.masterid = b.masterid\r\nwhere a.fieldname = 'orig_internet_email'";
-                            SqlDataReader datareader15 = ExecuteQuery(Query15, sqlconnection);
-
-                            string existingPath = @userProfileDirectory + "\\AUTOMATION\\Excel1.xlsx";
-                            Microsoft.Office.Interop.Excel.Application existingApp = new Microsoft.Office.Interop.Excel.Application();
-                            //existingApp.Visible = true;
-                            var existingWorkbook = existingApp.Workbooks.Open(existingPath);
-
-                            // Get or create Sheet2
-                            Worksheet sheet2;
-                            try
-                            {
-                                sheet2 = (Worksheet)existingWorkbook.Sheets[6];
-                            }
-                            catch
-                            {
-                                // If Sheet2 doesn't exist, add it
-                                sheet2 = (Worksheet)existingWorkbook.Sheets.Add(After: existingWorkbook.Sheets[existingWorkbook.Sheets.Count]);
-                                sheet2.Name = "itert_email_ImptNotChangd";
-                            }
-
-                            // Add column headers
-                            for (int i = 0; i < datareader15.FieldCount; i++)
-                            {
-                                sheet2.Cells[1, i + 1] = datareader15.GetName(i);
-                            }
-
-
-                            // Add data to Sheet2
-                            int row2 = 2;
-                            while (datareader15.Read())
-                            {
-                                for (int i = 0; i < datareader15.FieldCount; i++)
-                                {
-                                    sheet2.Cells[row2, i + 1] = datareader15[i];
-                                }
-                                row2++;
-                            }
-
-                            // Save the existing Excel workbook
-                            existingWorkbook.Save();
-                            existingWorkbook.Close();
-                            existingApp.Quit();
-
-                            Console.WriteLine($"Excel file updated at: {existingPath}");
-
-                            datareader15.Close();
-                            datareader15 = ExecuteQuery(Query15, sqlconnection);
-
-                            // Search in People_Report_1215.xlsx
-                            string peopleReportPath2 = @userProfileDirectory + "\\AUTOMATION\\People_Report_1215.xlsx";
-                            Console.WriteLine(peopleReportPath2);
-                            var peopleReportExcelApp2 = new Microsoft.Office.Interop.Excel.Application();
-                            var peopleReportWorkbook2 = peopleReportExcelApp2.Workbooks.Open(peopleReportPath2);
-                            var peopleReportWorksheet2 = (Worksheet)peopleReportWorkbook2.Sheets[1];
-                            while (datareader15.Read()) // Iterate over each value in datareader[0] and perform the search
-                            {
-                                var searchValue = Convert.ToString(datareader15[0]);
-                                var range = peopleReportWorksheet2.Range["A:E"]; // Adjust range to cover columns A to E
-                                var foundCell = range.Cells.Find(searchValue, Type.Missing, XlFindLookIn.xlValues, XlLookAt.xlWhole);
-
-                                if (foundCell != null) // If the value is found, print a message
-                                {
-                                    var rowinpeoplereport2 = foundCell.Row;
-                                    var valueFromColumnE = peopleReportWorksheet2.Cells[rowinpeoplereport2, 5].Value; // Assuming column E is the 3th column (index starts from 1)
-                                    Console.WriteLine($"The value '{searchValue}' is present in the people's report at row {rowinpeoplereport2}and corresponding value from column C is '{valueFromColumnE}'!");
-                                }
-                                else
-                                {
-                                    Console.WriteLine($"The value '{searchValue}' is not present in the people's report.");
-                                }
-                            }
-
-                            // Close the workbook and quit Excel application
-                            peopleReportWorkbook2.Close();
-                            peopleReportExcelApp2.Quit();
-                            Console.WriteLine("Org_internet_Email_Import_Not_Changed is complelted");
+                            OrigInternetemailNotchanged origInternetemailNotchanged = new OrigInternetemailNotchanged();
+                            origInternetemailNotchanged.Orig_internet_Email_Not_changed(sqlconnection);
+                            Console.WriteLine("-------------------------------------------------------------");
                             break;
                             
                         default:
@@ -245,17 +164,21 @@ namespace MEHR_Automation
                 Console.ReadLine();
 
                 //FIX PROCPROCESS EMPLOYEEUPDATES TO GET RID OF USING THIS PROC
-                storedProcedure.procUpdatetempfixStoredProcedure(sqlconnection);
-                storedProcedure.procPostUpdateStoredProcedure(sqlconnection);  //  have to check this..
+                //storedProcedure.procUpdatetempfixStoredProcedure(sqlconnection);
+                //Console.WriteLine("-------------------------------------------------------------");
+                //Console.ReadLine();
+                //storedProcedure.procPostUpdateStoredProcedure(sqlconnection);
+                //Console.WriteLine("-------------------------------------------------------------");
+                //Console.ReadLine();
 
                 //MACROQUERIES EXECUTION
                 MacroQueries macroQueries = new MacroQueries();
-                macroQueries.Add_Counts_by_Datasource(sqlconnection); Console.ReadLine();
-                macroQueries.Changed_Fields_by_DataSource(sqlconnection); Console.ReadLine();
-                macroQueries.Change_NotUpdated_by_DataSource(sqlconnection); Console.ReadLine();
-                macroQueries.AddDeleted_by_DataSource(sqlconnection); Console.ReadLine();
-                macroQueries.Removed_Countby_DataSource(sqlconnection); Console.ReadLine();
-                macroQueries.Check_Email_Types(sqlconnection); Console.ReadLine();
+                macroQueries.Add_Counts_by_Datasource(sqlconnection); 
+                macroQueries.Changed_Fields_by_DataSource(sqlconnection);
+                macroQueries.Change_NotUpdated_by_DataSource(sqlconnection);
+                macroQueries.AddDeleted_by_DataSource(sqlconnection);
+                macroQueries.Removed_Countby_DataSource(sqlconnection);
+                macroQueries.Check_Email_Types(sqlconnection); 
                 macroQueries.Missing_Email_Types(sqlconnection); Console.ReadLine();
                 macroQueries.Coastal_Manager_Duplicates(sqlconnection); Console.ReadLine();
                 macroQueries.Danisco_in_Workday_Duplicates(sqlconnection); Console.ReadLine();
@@ -271,16 +194,25 @@ namespace MEHR_Automation
                 macroQueries.vw_RemoveCountByDatasource(sqlconnection); Console.ReadLine();
 
 
-
-
-
-
+                storedProcedure.procRemoveInvalidEmailStoredProcedure(sqlconnection);
+                Console.WriteLine("-------------------------------------------------------------");
+                Console.ReadLine();
+                storedProcedure.procRefineManagerDataStoredProcedure(sqlconnection);
+                Console.WriteLine("-------------------------------------------------------------");
+                Console.ReadLine();
+                storedProcedure.procOverrideBadUpdatesStoredProcedure(sqlconnection);
+                Console.WriteLine("-------------------------------------------------------------");
+                Console.ReadLine();
+                storedProcedure.procStage1ReviewCleanupStoredProcedure(sqlconnection);
+                Console.WriteLine("-------------------------------------------------------------");
+                Console.ReadLine();
+                storedProcedure.procUpdatePicklistValuesStoredProcedure(sqlconnection);
+                Console.WriteLine("-------------------------------------------------------------");
+                Console.ReadLine();
 
                 sqlconnection.Close();
 
 
-                //Read Excel  people Report File
-                //ReadExcelFile();
 
                 Console.ReadLine();
 
@@ -292,6 +224,7 @@ namespace MEHR_Automation
             {
                 Console.WriteLine("You have not disabled the job. Please disable the Mentioned jobs to proceed further ");
                 //Console.WriteLine("please type any key to Exit");
+                //Console.WriteLine("-------------------------------------------------------------");
                 //Console.ReadLine();
                 //Environment.Exit(0);
 
@@ -301,63 +234,7 @@ namespace MEHR_Automation
 
         }
 
-        public static SqlDataReader ExecuteQuery(string query, SqlConnection connection) {
-            try
-            {
-                SqlCommand cmd = new SqlCommand(query, connection);
-                SqlDataReader datareader = cmd.ExecuteReader();
-                return datareader;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error executing query: {ex.Message}");
-                throw;
-            }
 
-        }
-
-        //public static void ReadExcelFile()
-        //{
-        //    Microsoft.Office.Interop.Excel.Application app = new Microsoft.Office.Interop.Excel.Application();
-        //    app.Visible = true;
-
-        //    string path = "C:\\Users\\kwr579\\Desktop\\AUTOMATION\\People Report_1215.xlsx";
-        //    Workbook wb;
-        //    Worksheet ws;
-
-        //    try
-        //    {
-        //        wb = app.Workbooks.Open(path);
-        //        ws = wb.Worksheets["sheet1"];
-
-        //        string cellData = " " + ws.Range["A1"].Value;
-        //        Console.WriteLine(cellData);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine("An error occurred: " + ex.Message);
-        //    }
-        //}
-
-
-//        Open the people's report Excel file
-//        string peopleReportPath = "C:\\Path\\To\\PeopleReport.xlsx";
-//        var peopleReportExcelApp = new Microsoft.Office.Interop.Excel.Application();
-//        var peopleReportWorkbook = peopleReportExcelApp.Workbooks.Open(peopleReportPath);
-//        var peopleReportWorksheet = (Worksheet)peopleReportWorkbook.Sheets[1];
-
-//        Get the range of values in column A of the people's report Excel sheet
-//        var range = peopleReportWorksheet.Range["A:A"];
-
-//        Check if datareader14[0] is present in column A
-//if (range.Cells.Find(Convert.ToString(datareader14[0]), Type.Missing, XlFindLookIn.xlValues, XlLookAt.xlWhole) != null)
-//{
-//    Console.WriteLine("Hello, the value is present in the people's report!");
-//}
-
-//    Close the people's report Excel file
-//    peopleReportWorkbook.Close();
-//peopleReportExcelApp.Quit();
         
 
 

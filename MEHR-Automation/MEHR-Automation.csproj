@@ -151,10 +151,13 @@
     <Compile Include="DataLoadCount.cs" />
     <Compile Include="ExecuteQueries.cs" />
     <Compile Include="CountofNewRecords.cs" />
+    <Compile Include="ImportChanged.cs" />
+    <Compile Include="ImportNotChanged.cs" />
     <Compile Include="MacroQueries.cs" />
     <Compile Include="OrigEpassId.cs" />
     <Compile Include="OrigFirst.cs" />
     <Compile Include="OrigInternetEmail.cs" />
+    <Compile Include="OrigInternetemailNotchanged.cs" />
     <Compile Include="OrigLast.cs" />
     <Compile Include="OrigMiddle.cs" />
     <Compile Include="Program.cs" />
