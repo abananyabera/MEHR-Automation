@@ -160,6 +160,7 @@
     <Compile Include="OrigInternetemailNotchanged.cs" />
     <Compile Include="OrigLast.cs" />
     <Compile Include="OrigMiddle.cs" />
+    <Compile Include="PicklingQueries.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StoredProcedure.cs" />
