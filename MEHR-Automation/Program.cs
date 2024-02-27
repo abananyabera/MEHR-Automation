@@ -20,7 +20,7 @@ namespace MEHR_Automation
 {
     class Program
     {
-        
+
         static void Main(string[] args)
         {
             OrigEpassId origEpassId = new OrigEpassId();
@@ -28,17 +28,20 @@ namespace MEHR_Automation
             OrigFirst origFirst = new OrigFirst();
             OrigLast origLast = new OrigLast();
             OrigMiddle origMiddle = new OrigMiddle();
+            PicklingQueries picklingQueries = new PicklingQueries();
             Console.WriteLine("****  MEHR DAY 2  ACTIVITY AUTOMATION  ****");
             Console.ReadLine();
-            
+
+
+
             // Get the user's directory
             string userProfileDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             string configuration = ConfigurationManager.ConnectionStrings["Dbcon"].ToString();
             SqlConnection sqlconnection = new SqlConnection(configuration);
             sqlconnection.Open();
-            Console.WriteLine("-------  DataBase Connection is successfull  --------");
-            Console.ReadLine();
-           
+            //Console.WriteLine("-------  DataBase Connection is successfull  --------");
+            //Console.ReadLine();
+            #region
 
             tablebackup tableBackup = new tablebackup();
             tableBackup.takeTableBackup1(sqlconnection);//TableBackup1
@@ -48,7 +51,7 @@ namespace MEHR_Automation
             DataLoadCount dataLoadCount = new DataLoadCount();
 
             bool DataLoadcountcomparision = dataLoadCount.Dataloadfile(sqlconnection);
-            if(DataLoadcountcomparision == true)
+            if (DataLoadcountcomparision == true)
             {
                 Console.WriteLine("\nDataLoad_77_After_triage file count and Query count is Equal.");
                 Console.WriteLine("-------------------------------------------------------------");
@@ -63,7 +66,7 @@ namespace MEHR_Automation
 
                 //Environment.Exit(0);
             }
-            
+
 
             Console.WriteLine("Please Disable the jobs Manually : \n 1. UserID Synch Job \n 2. Modification Synch Job \n Please press Y to continue");
             char chkJobs = Console.ReadLine()[0];
@@ -151,7 +154,7 @@ namespace MEHR_Automation
                             origInternetemailNotchanged.Orig_internet_Email_Not_changed(sqlconnection);
                             Console.WriteLine("-------------------------------------------------------------");
                             break;
-                            
+
                         default:
                             Environment.Exit(0);
                             break;
@@ -173,12 +176,12 @@ namespace MEHR_Automation
 
                 //MACROQUERIES EXECUTION
                 MacroQueries macroQueries = new MacroQueries();
-                macroQueries.Add_Counts_by_Datasource(sqlconnection); 
+                macroQueries.Add_Counts_by_Datasource(sqlconnection);
                 macroQueries.Changed_Fields_by_DataSource(sqlconnection);
                 macroQueries.Change_NotUpdated_by_DataSource(sqlconnection);
                 macroQueries.AddDeleted_by_DataSource(sqlconnection);
                 macroQueries.Removed_Countby_DataSource(sqlconnection);
-                macroQueries.Check_Email_Types(sqlconnection); 
+                macroQueries.Check_Email_Types(sqlconnection);
                 macroQueries.Missing_Email_Types(sqlconnection); Console.ReadLine();
                 macroQueries.Coastal_Manager_Duplicates(sqlconnection); Console.ReadLine();
                 macroQueries.Danisco_in_Workday_Duplicates(sqlconnection); Console.ReadLine();
@@ -210,7 +213,21 @@ namespace MEHR_Automation
                 Console.WriteLine("-------------------------------------------------------------");
                 Console.ReadLine();
 
+                #endregion
+
+                Console.WriteLine("UnMappedEntities");
+                picklingQueries.UnMappedEntities(sqlconnection);
+                Console.WriteLine("UnmappedSBUs");
+                picklingQueries.UnmappedSBUs(sqlconnection);
+                Console.WriteLine("UnmappedSites");
+                picklingQueries.UnmappedSites(sqlconnection);
+                Console.WriteLine("UnmappedOps");
+                picklingQueries.UnmappedOps(sqlconnection);
+                Console.WriteLine("UnmappedFunctions");
+                picklingQueries.UnmappedFunctions(sqlconnection);
+
                 sqlconnection.Close();
+
 
 
 
@@ -219,23 +236,23 @@ namespace MEHR_Automation
 
 
 
-            }
-            else
-            {
-                Console.WriteLine("You have not disabled the job. Please disable the Mentioned jobs to proceed further ");
-                //Console.WriteLine("please type any key to Exit");
-                //Console.WriteLine("-------------------------------------------------------------");
-                //Console.ReadLine();
-                //Environment.Exit(0);
+                //}
+                //else
+                //{
+                //    Console.WriteLine("You have not disabled the job. Please disable the Mentioned jobs to proceed further ");
+                //    //Console.WriteLine("please type any key to Exit");
+                //    //Console.WriteLine("-------------------------------------------------------------");
+                //    //Console.ReadLine();
+                //    //Environment.Exit(0);
+
+                //}
+
+
 
             }
-
-
 
         }
 
-
-        
 
 
     }
