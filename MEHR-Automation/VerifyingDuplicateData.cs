@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace MEHR_Automation
 {
     public class VerifyingDuplicateData
@@ -16,9 +17,9 @@ namespace MEHR_Automation
         {
             #region MyRegion
             Console.WriteLine("\n Duplicates verfication is started\n");
-            string Query = "select uniqueid,count(uniqueid),datasourceid from tbl_employees_import group by uniqueid,datasourceid having count(uniqueid)>1";
+            string Query = "select uniqueid,count(uniqueid),datasourceid from tbl_employees_import\r\ngroup by uniqueid,datasourceid\r\nhaving count(uniqueid)>1\r\n\r\nIF OBJECT_ID('tbl_Employees_Import_Excluded') IS NOT NULL \r\n\tDROP TABLE tbl_Employees_Import_Excluded\r\n\t\r\n\r\nselect b.*\r\ninto tbl_Employees_Import_Excluded\r\nfrom WorkdayIntegratedEmployees a, tbl_employees_import b\r\nwhere me_uniqueID=b.uniqueid and a.datasourceid=b.datasourceid\r\n\r\nDELETE b\r\nfrom WorkdayIntegratedEmployees a, tbl_employees_import b\r\nwhere me_uniqueID=b.uniqueid and a.datasourceid=b.datasourceid;";
             SqlDataReader datareader = executeQueries.ExecuteQuery(Query, sqlconnection);
-            if (!datareader.HasRows)
+            if (datareader.HasRows)
             {
                 while (datareader.Read())
                 {
@@ -40,44 +41,20 @@ namespace MEHR_Automation
             #endregion
 
 
-            #region MyRegion
-            Console.WriteLine("\n Duplicates verfication is  started\n");
-            string Query5 = "IF OBJECT_ID('tbl_Employees_Import_Excluded') IS NOT NULL DROP TABLE tbl_Employees_Import_Excluded";
-            SqlDataReader datareader5 = executeQueries.ExecuteQuery(Query5, sqlconnection);
-            if (!datareader5.HasRows)
+        }
+
+        public void reverifyDuplicates(SqlConnection sqlconnection)
+        {
+            Console.WriteLine("\n Duplicates reverfication is started\n");
+            string Query = "Select epassid from tbl_employees_stage1 where active = 1 group by epassid having count(epassid)>1";
+            SqlDataReader datareader = executeQueries.ExecuteQuery(Query, sqlconnection);
+            if (datareader.HasRows)
             {
-                while (datareader5.Read())
+                while (datareader.Read())
                 {
-                    Console.WriteLine(datareader5[0]);
+                    Console.WriteLine(datareader[0]);
                 }
-                Console.WriteLine("\n Duplicates verfication is successfull \n");
-                Console.WriteLine("-------------------------------------------------------------");
-                Console.ReadLine();
-            }
-            else
-            {
-
-                Console.WriteLine(" Not Returning Empty results in current Executing Query");
-                Console.WriteLine("We cannot proceed any further please type any key to Exit");
-                Console.WriteLine("-------------------------------------------------------------");
-                Console.ReadLine();
-
-                //Environment.Exit(0);
-            }
-            #endregion
-
-
-            #region MyRegion
-            Console.WriteLine("\n Duplicates verfication is started\n");
-            string Query6 = "select b.* into tbl_Employees_Import_Excluded from WorkdayIntegratedEmployees a, tbl_employees_import b where me_uniqueID=b.uniqueid and a.datasourceid=b.datasourceid";
-            SqlDataReader datareader6 = executeQueries.ExecuteQuery(Query6, sqlconnection);
-            if (!datareader6.HasRows)
-            {
-                while (datareader6.Read())
-                {
-                    Console.WriteLine(datareader6[0] + "|" + datareader6[1]);
-                }
-                Console.WriteLine("\n Duplicates verfication is successfull \n");
+                Console.WriteLine("\n Duplicates reverfication is successfull \n");
                 Console.WriteLine("-------------------------------------------------------------");
                 Console.ReadLine();
             }
@@ -88,23 +65,19 @@ namespace MEHR_Automation
                 Console.WriteLine("-------------------------------------------------------------");
                 Console.ReadLine();
 
-                //Environment.Exit(0);
             }
-            #endregion
 
 
-            #region MyRegion
-            Console.WriteLine("\n Duplicates verfication is started\n");
-            string Query7 = "DELETE b from WorkdayIntegratedEmployees a, tbl_employees_import b where me_uniqueID=b.uniqueid and a.datasourceid=b.datasourceid";
-            SqlDataReader datareader7 = executeQueries.ExecuteQuery(Query7, sqlconnection);
-            if (!datareader7.HasRows)
+            Console.WriteLine("\n Duplicates reverfication is started\n");
+            string Query2 = "Select internet_email from tbl_employees_stage1 where active = 1 group by internet_email having count(internet_email)>1";
+            SqlDataReader datareader2 = executeQueries.ExecuteQuery(Query2, sqlconnection);
+            if (datareader2.HasRows)
             {
-
-                while (datareader7.Read())
+                while (datareader2.Read())
                 {
-                    Console.WriteLine(datareader7[0] + "|" + datareader7[1]);
+                    Console.WriteLine(datareader2[0] );
                 }
-                Console.WriteLine("\n Duplicates verfication is successfull \n");
+                Console.WriteLine("\n Duplicates reverfication is successfull \n");
                 Console.WriteLine("-------------------------------------------------------------");
                 Console.ReadLine();
             }
@@ -114,10 +87,31 @@ namespace MEHR_Automation
                 Console.WriteLine("We cannot proceed any further please type any key to Exit");
                 Console.WriteLine("-------------------------------------------------------------");
                 Console.ReadLine();
-                
-                //Environment.Exit(0);
+
             }
-            #endregion
+
+
+            Console.WriteLine("\n Duplicates reverfication is started\n");
+            string Query3 = "Select epassid from tbl_employees_stage1 group by epassid having count(epassid)>1";
+            SqlDataReader datareader3 = executeQueries.ExecuteQuery(Query3, sqlconnection);
+            if (datareader3.HasRows)
+            {
+                while (datareader3.Read())
+                {
+                    Console.WriteLine(datareader3[0]);
+                }
+                Console.WriteLine("\n Duplicates reverfication is successfull \n");
+                Console.WriteLine("-------------------------------------------------------------");
+                Console.ReadLine();
+            }
+            else
+            {
+                Console.WriteLine(" Not Returning Empty results in current Executing Query");
+                Console.WriteLine("We cannot proceed any further please type any key to Exit");
+                Console.WriteLine("-------------------------------------------------------------");
+                Console.ReadLine();
+
+            }
         }
 
     }

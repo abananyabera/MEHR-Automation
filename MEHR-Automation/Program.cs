@@ -29,6 +29,7 @@ namespace MEHR_Automation
             OrigLast origLast = new OrigLast();
             OrigMiddle origMiddle = new OrigMiddle();
             PicklingQueries picklingQueries = new PicklingQueries();
+            VerifyingDuplicateData verifyingDuplicateData = new VerifyingDuplicateData();
             Console.WriteLine("****  MEHR DAY 2  ACTIVITY AUTOMATION  ****");
             Console.ReadLine();
 
@@ -38,6 +39,7 @@ namespace MEHR_Automation
             string userProfileDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             string configuration = ConfigurationManager.ConnectionStrings["Dbcon"].ToString();
             SqlConnection sqlconnection = new SqlConnection(configuration);
+            StoredProcedure storedProcedure = new StoredProcedure();
             sqlconnection.Open();
             //Console.WriteLine("-------  DataBase Connection is successfull  --------");
             //Console.ReadLine();
@@ -80,7 +82,7 @@ namespace MEHR_Automation
                 Datachecking.VerifyDuplicateDataintable(sqlconnection);
 
 
-                StoredProcedure storedProcedure = new StoredProcedure(); //Stored Procedure Execution
+                
                 storedProcedure.StoredProcedureExecution(sqlconnection);
                 Console.WriteLine("\n proc_Pre_Update_Processing and procProcessEmployeeUpdates Stored procedure are Executed once successfully ");
                 Console.WriteLine("-------------------------------------------------------------");
@@ -213,7 +215,6 @@ namespace MEHR_Automation
                 Console.WriteLine("-------------------------------------------------------------");
                 Console.ReadLine();
 
-                #endregion
 
                 Console.WriteLine("UnMappedEntities");
                 picklingQueries.UnMappedEntities(sqlconnection);
@@ -225,6 +226,14 @@ namespace MEHR_Automation
                 picklingQueries.UnmappedOps(sqlconnection);
                 Console.WriteLine("UnmappedFunctions");
                 picklingQueries.UnmappedFunctions(sqlconnection);
+                #endregion
+
+
+                //code for Special Characters
+
+                storedProcedure.replaceSpecialChar(sqlconnection);
+                storedProcedure.findSpecialChar(sqlconnection);
+                verifyingDuplicateData.reverifyDuplicates(sqlconnection);
 
                 sqlconnection.Close();
 
@@ -256,4 +265,5 @@ namespace MEHR_Automation
 
 
     }
+
 }
