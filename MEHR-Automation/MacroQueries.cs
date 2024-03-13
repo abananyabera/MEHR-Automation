@@ -101,6 +101,9 @@ namespace MEHR_Automation
                 while (datareader.Read())
                 {
                     Console.WriteLine(datareader[0] + "|" + datareader[1] + datareader[2] + "|" + datareader[3] + "|" + datareader[4] + "|" + datareader[5] + "|" + datareader[6]);
+                    string updateQuery = "UPDATE tbl_employees_stage1 SET email_type_id = 1 WHERE epassid = '" + datareader[0]+"'";
+                    Console.Write(updateQuery);
+                    //To Be Done
                 }
                 Console.WriteLine("The data is present need to perform some operation");
                 Console.WriteLine("-------------------------------------------------------------");
