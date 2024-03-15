@@ -15,6 +15,7 @@ namespace MEHR_Automation
         {
             string Query = "SELECT DISTINCT Count(dbo.tbl_Employees_Stage1.masterid) AS CountOfmasterid, upper([corporate_entity]) AS Expr1, dbo.tbl_Employees_Stage1.datasourceid\r\nFROM dbo.tbl_Employees_Stage1\r\nWHERE (((dbo.tbl_Employees_Stage1.entityid) Is Null) AND ((dbo.tbl_Employees_Stage1.active)=1))\r\nGROUP BY Upper([corporate_entity]), dbo.tbl_Employees_Stage1.datasourceid";
             SqlDataReader datareader = executeQueries.ExecuteQuery(Query, sqlconnection);
+            StoredProcedure storedProcedure = new StoredProcedure();
             if (!datareader.HasRows)
             {
                 Console.WriteLine("No results Found");
@@ -24,6 +25,17 @@ namespace MEHR_Automation
                 while (datareader.Read())
                 {
                     Console.WriteLine(datareader[0] + "|" + datareader[1] + datareader[2]  );
+                    string selectQuery = "select * from tbl_entity where description like '%" + datareader[1] +"%'";
+                    SqlDataReader queryReturned = executeQueries.ExecuteQuery(selectQuery, sqlconnection);
+                    if (!queryReturned.HasRows)
+                    {
+                        string selectSrNoQuery = "select entityid from tbl_Entity where description = '" + queryReturned[2] + "'";
+                        SqlDataReader srNo = executeQueries.ExecuteQuery(selectSrNoQuery, sqlconnection);
+
+                        string insertQuery = "insert into tbl_entity values ('" + srNo[0] + "','" + queryReturned[2] +"',1,1)";
+                        SqlDataReader Insert = executeQueries.ExecuteQuery(insertQuery, sqlconnection);x
+                        storedProcedure.procUpdatePicklistValuesStoredProcedure(sqlconnection);
+                    }
                 }
             }
         }
@@ -58,6 +70,17 @@ namespace MEHR_Automation
                 while (datareader.Read())
                 {
                     Console.WriteLine(datareader[0] + "|" + datareader[1] + datareader[2]  );
+                    string query = "select * from tbl_Site where description like '%" + datareader[1] +"%'";
+                    SqlDataReader queryReturned = executeQueries.ExecuteQuery(query, sqlconnection);
+                    if (!queryReturned.HasRows)
+                    {
+                        string queryCountryId = "select * from tbl_Country where description like '%" + datareader[3] +"%'";
+                        SqlDataReader returned = executeQueries.ExecuteQuery(query, sqlconnection);
+                        string queryInsert = "insert into tbl_Site VALUES (" + returned[0] + "," + returned[1] +" , 0, 'ABC', '" + returned[3] +"',1,1)";
+                        SqlDataReader insertData = executeQueries.ExecuteQuery(queryInsert, sqlconnection);
+
+                    }
+
                 }
             }
         }
