@@ -32,7 +32,6 @@ namespace MEHR_Automation
             else
             {
                 Console.WriteLine(" Not Returning Empty results in current Executing Query");
-                Console.WriteLine("We cannot proceed any further please type any key to Exit"); 
                 Console.WriteLine("-------------------------------------------------------------");
                 Console.ReadLine();
 
