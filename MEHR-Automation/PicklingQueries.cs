@@ -33,7 +33,7 @@ namespace MEHR_Automation
                         SqlDataReader srNo = executeQueries.ExecuteQuery(selectSrNoQuery, sqlconnection);
 
                         string insertQuery = "insert into tbl_entity values ('" + srNo[0] + "','" + queryReturned[2] +"',1,1)";
-                        SqlDataReader Insert = executeQueries.ExecuteQuery(insertQuery, sqlconnection);x
+                        SqlDataReader Insert = executeQueries.ExecuteQuery(insertQuery, sqlconnection);
                         storedProcedure.procUpdatePicklistValuesStoredProcedure(sqlconnection);
                     }
                 }

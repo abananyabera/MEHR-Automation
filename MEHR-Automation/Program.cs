@@ -22,7 +22,7 @@ namespace MEHR_Automation
     {
 
         static void Main(string[] args)
-        {
+        {            
             OrigEpassId origEpassId = new OrigEpassId();
             OrigInternetEmail origInternetEmail = new OrigInternetEmail();
             OrigFirst origFirst = new OrigFirst();
@@ -234,6 +234,15 @@ namespace MEHR_Automation
                 storedProcedure.replaceSpecialChar(sqlconnection);
                 storedProcedure.findSpecialChar(sqlconnection);
                 verifyingDuplicateData.reverifyDuplicates(sqlconnection);
+
+
+
+                //Final Query
+                //commenting as of now
+
+                //storedProcedure.procUpdateMasterEmployeeTable(sqlconnection);
+
+
 
                 sqlconnection.Close();
 
