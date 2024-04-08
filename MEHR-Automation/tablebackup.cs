@@ -5,6 +5,7 @@ using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Office.Interop.Excel;
 
 namespace MEHR_Automation
 {
@@ -14,7 +15,7 @@ namespace MEHR_Automation
         ExecuteQueries executeQueries = new ExecuteQueries();
 
 
-        public void takeTableBackup1(SqlConnection sqlconnection) 
+        public void TakeTableBackup_tbl_employees_stage1(SqlConnection sqlconnection) 
         {
             string timeStamp = DateTime.Now.ToString("MMddyyyy");
             string destinationTable1 = "[dbo]. [tbl_employees_stage1_" + timeStamp + "]";
@@ -60,21 +61,17 @@ namespace MEHR_Automation
 
             if (countMainTable == countMainTableBackup)
             {
-                Console.WriteLine("\nBackup for tbl_employees_stage1 is successfull  ");
-                Console.WriteLine("-------------------------------------------------------------");
-                Console.ReadLine();
+                Console.WriteLine("Backup for tbl_employees_stage1 is successfull");
             }
             else
             {
-                Console.WriteLine("\nBackup for tbl_employees_stage1 is failed");
-                Console.WriteLine("-------------------------------------------------------------");
-                Console.ReadLine();
+                Console.WriteLine("Backup for tbl_employees_stage1 is failed");
             }
 
             
         }
 
-        public void takeTableBackup2(SqlConnection sqlconnection)
+        public void TakeTableBackup_tbl_employees_stage1_hold(SqlConnection sqlconnection)
         {
             string timeStamp2 = DateTime.Now.ToString("MMddyyyy");
             string destinationTable2 = "[dbo]. [tbl_employees_stage1_hold_" + timeStamp2 + "]";
@@ -123,19 +120,15 @@ namespace MEHR_Automation
 
             if (countMainTable2 == countMainTableBackup2)
             {
-                Console.WriteLine("\nBackup for tbl_employees_stage1_hold is successfull");
-                Console.WriteLine("-------------------------------------------------------------");
-                Console.ReadLine();
+                Console.WriteLine("Backup for tbl_employees_stage1_hold is successfull");
             }
             else
             {
-                Console.WriteLine("\nBackup for tbl_employees_stage1_hold is failed");
-                Console.WriteLine("-------------------------------------------------------------");
-                Console.ReadLine();
+                Console.WriteLine("Backup for tbl_employees_stage1_hold is failed");
             }
-
-            
+           
         }
+
         
     }
 }

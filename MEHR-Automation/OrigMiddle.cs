@@ -12,9 +12,9 @@ namespace MEHR_Automation
     {
         string userProfileDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         ExecuteQueries executeQueries = new ExecuteQueries();
-        public void execQuery(SqlConnection sqlconnection)
+        public void OrigMiddle_Query(SqlConnection sqlconnection)
         {
-            Console.WriteLine("\n orig_middle is started \n");
+            Console.WriteLine("orig_middle is started");
             string Query = "Select a.orig_epassid,b.epassid,a.orig_first,b.first,a.orig_last,b.last,a.orig_middle,b.middle,a.orig_internet_email,b.internet_email,a.orig_site,b.site from \r\ndbo.tbl_Employees_Import_Changed A inner join dbo.tbl_Employees_Stage1_Hold B on A.masterid = b.masterid\r\nwhere a.fieldname = 'orig_middle'";
             SqlDataReader datareader = executeQueries.ExecuteQuery(Query, sqlconnection);
             if (datareader.HasRows)
@@ -61,6 +61,7 @@ namespace MEHR_Automation
                 existingWorkbook.Close();
                 existingApp.Quit();
 
+                Console.WriteLine($"Excel file updated at: {existingPath}");
 
                 datareader.Close();
                 datareader = executeQueries.ExecuteQuery(Query, sqlconnection);
@@ -81,7 +82,7 @@ namespace MEHR_Automation
                     {
                         var rowinpeoplereport = foundCell.Row;
                         var valueFromColumnE = peopleReportWorksheet.Cells[rowinpeoplereport, 7].Value; // Assuming column E is the 7th column (index starts from 1)
-                        Console.WriteLine($"The value '{searchValue}' is present in the people's report at row {rowinpeoplereport}and corresponding value from column E is '{valueFromColumnE}'!");
+                        Console.WriteLine($"\nThe value '{searchValue}' is present in the people's report at row {rowinpeoplereport}and corresponding value from column E is '{valueFromColumnE}'!");
                         if (orig_middle == valueFromColumnE)
                         {
                             Console.WriteLine("No Update is Required");
@@ -97,7 +98,7 @@ namespace MEHR_Automation
                     }
                     else
                     {
-                        Console.WriteLine($"The value '{searchValue}' is not present in the people's report.");
+                        Console.WriteLine($"\nThe value '{searchValue}' is not present in the people's report.");
                     }
                 }
 
@@ -106,11 +107,18 @@ namespace MEHR_Automation
                 peopleReportExcelApp.Quit();
 
                 Console.WriteLine("\n orig_middle is completed \n");
+                ReadLine();
             }
             else
             {
                 Console.WriteLine("\n orig_epassid is completed with out generating the Excel because of Query Returning Empty.");
+                ReadLine();
             }
+
+        }
+        static void ReadLine()
+        {
+            Console.WriteLine("-------------------------------------------------------------");
 
         }
     }
