@@ -12,8 +12,7 @@ namespace MEHR_Automation
         ExecuteQueries executeQueries = new ExecuteQueries();
         public void Import_Not_Changed(SqlConnection sqlconnection)
         {
-            Console.WriteLine("-------------------------------------------------------------");
-            Console.WriteLine("\n distinct(fieldname) of tbl_Employees_Import_Not_Changed is started \n");
+           
             string Query = "Select distinct(fieldname) from tbl_Employees_Import_Changed_Not_Updated";
             SqlDataReader datareader = executeQueries.ExecuteQuery(Query, sqlconnection);
             while (datareader.Read())

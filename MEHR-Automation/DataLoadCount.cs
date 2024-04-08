@@ -29,7 +29,7 @@ namespace MEHR_Automation
                 
             }
             Console.WriteLine("Count of the Query Result :" +comparisioncount);
-            Console.WriteLine("-------------------------------------------------------------");
+            
             if (lineCount == comparisioncount)
             {
                 return true;

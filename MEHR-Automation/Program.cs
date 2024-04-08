@@ -13,6 +13,9 @@ using Microsoft.Office.Interop.Excel;
 using _Excel = Microsoft.Office.Interop.Excel;
 using System.IO;
 using System.ComponentModel.Design;
+using static System.Windows.Forms.LinkLabel;
+using System.CodeDom.Compiler;
+using System.Diagnostics.Metrics;
 
 
 
@@ -22,16 +25,30 @@ namespace MEHR_Automation
     {
 
         static void Main(string[] args)
-        {            
+        {
+            tablebackup tableBackup = new tablebackup();
+            DataLoadCount dataLoadCount = new DataLoadCount();
+            VerifyingDuplicateData Datachecking = new VerifyingDuplicateData();
+            CountofNewRecords countofNewRecords = new CountofNewRecords();
+            ImportChanged ImportChanged = new ImportChanged();
+            OrigInternetemailNotchanged origInternetemailNotchanged = new OrigInternetemailNotchanged();
             OrigEpassId origEpassId = new OrigEpassId();
             OrigInternetEmail origInternetEmail = new OrigInternetEmail();
             OrigFirst origFirst = new OrigFirst();
             OrigLast origLast = new OrigLast();
             OrigMiddle origMiddle = new OrigMiddle();
-            PicklingQueries picklingQueries = new PicklingQueries();
+            ImportNotChanged importNotChanged = new ImportNotChanged();
+            List_MicroQueries list_MicroQueries = new List_MicroQueries();
+            List_pickingQueries list_PickingQueries = new List_pickingQueries();
             VerifyingDuplicateData verifyingDuplicateData = new VerifyingDuplicateData();
+            Special_Characters special_Characters = new Special_Characters();
+
+            Console.WriteLine("DataBase Connection is successfull");
+            ReadLine();
+
             Console.WriteLine("****  MEHR DAY 2  ACTIVITY AUTOMATION  ****");
-            Console.ReadLine();
+            Console.WriteLine(" \n Next Action : Please click Enter to take the Table backup for the 'tbl_employees_stage1' ");
+            ReadLine();
 
 
 
@@ -41,61 +58,61 @@ namespace MEHR_Automation
             SqlConnection sqlconnection = new SqlConnection(configuration);
             StoredProcedure storedProcedure = new StoredProcedure();
             sqlconnection.Open();
-            //Console.WriteLine("-------  DataBase Connection is successfull  --------");
-            //Console.ReadLine();
-            #region
 
-            tablebackup tableBackup = new tablebackup();
-            tableBackup.takeTableBackup1(sqlconnection);//TableBackup1
-            tableBackup.takeTableBackup2(sqlconnection);//TableBackup2
+            special_Characters.findSpecialChar(sqlconnection);
 
-
-            DataLoadCount dataLoadCount = new DataLoadCount();
+            tableBackup.TakeTableBackup_tbl_employees_stage1(sqlconnection);//TableBackup1
+            Console.WriteLine(" \n Next Action : Please click Enter to take the Table backup for the 'tbl_employees_stage1_hold' ");
+            ReadLine();
+            tableBackup.TakeTableBackup_tbl_employees_stage1_hold(sqlconnection);//TableBackup2
+            Console.WriteLine(" \n Next Action : Please click Enter to compare the Triage file and the Query Result");
+            ReadLine();
 
             bool DataLoadcountcomparision = dataLoadCount.Dataloadfile(sqlconnection);
             if (DataLoadcountcomparision == true)
             {
                 Console.WriteLine("\nDataLoad_77_After_triage file count and Query count is Equal.");
-                Console.WriteLine("-------------------------------------------------------------");
-                Console.ReadLine();
+                Console.WriteLine(" \n Next Action : Please click Enter to Disable the Jobs ");
+                ReadLine();
             }
             else
             {
                 Console.WriteLine("\nDataLoad_77_After_triage file count and Query count is not Equal.");
                 Console.WriteLine("We cannot proceed any further please type any key to Exit");
-                Console.WriteLine("-------------------------------------------------------------");
-                Console.ReadLine();
+                ReadLine();
 
                 //Environment.Exit(0);
             }
+            
+            Console.WriteLine("\n NOTE:  JOBS HAS TO BE DISABLED MANUALLY ");
 
-
-            Console.WriteLine("Please Disable the jobs Manually : \n 1. UserID Synch Job \n 2. Modification Synch Job \n Please press Y to continue");
+            Console.WriteLine("\n JOBS: \n 1. UserID Synch Job \n 2. Modification Synch Job \n Please press Y to continue");
             char chkJobs = Console.ReadLine()[0];
             if (chkJobs == 'Y' || chkJobs == 'y')
             {
-                Console.WriteLine("\n UserID Synch and Modification Synch Jobs are disabled successfully");
-                Console.WriteLine("-------------------------------------------------------------");
-                Console.ReadLine();
+                Console.WriteLine("UserID Synch and Modification Synch Jobs are disabled successfully");
+                Console.WriteLine("\n Next Action : Please click Enter to Verify the Duplicates in the table");
+                ReadLine();
 
-                VerifyingDuplicateData Datachecking = new VerifyingDuplicateData();
                 Datachecking.VerifyDuplicateDataintable(sqlconnection);
+                Console.WriteLine("Next Action : Please click Enter to execute the proc_Pre_Update_Processing and procProcessEmployeeUpdates stored procedures");
+                Console.WriteLine(" \n NOTE : PLease Execute the stored procedures only once ");
+                ReadLine();
 
 
-                
-                storedProcedure.StoredProcedureExecution(sqlconnection);
-                Console.WriteLine("\n proc_Pre_Update_Processing and procProcessEmployeeUpdates Stored procedure are Executed once successfully ");
-                Console.WriteLine("-------------------------------------------------------------");
-                Console.ReadLine();
-
-                CountofNewRecords countofNewRecords = new CountofNewRecords(); //count of New Records
-                countofNewRecords.CountNewRecords(sqlconnection);
+                //storedProcedure.StoredProcedureExecution(sqlconnection); // stored procedure Execution of proc_Pre_Update_Processing
+                Console.WriteLine("proc_Pre_Update_Processing and procProcessEmployeeUpdates Stored procedure are Executed Only Once successfully ");
+                Console.WriteLine("\n Next Action: please click Enter to count the records in the table 'tbl_Employees_Import_Add' ");
+                ReadLine();
 
 
-                ImportChanged importChanged = new ImportChanged();
-                importChanged.Import_Changed(sqlconnection);
-                Console.WriteLine("-------------------------------------------------------------");
-                Console.ReadLine();
+                countofNewRecords.CountNewRecords(sqlconnection); //count of New Records
+                Console.WriteLine("\n Next Action: please click Enter to  Execute the Distinct(fieldname) for the table 'tbl_Employees_Import_Changed' ");
+                ReadLine();
+
+                ImportChanged.Import_Changed(sqlconnection);
+                Console.WriteLine("\n Next Action: please click Enter to verify the data in the 'tbl_Employees_Import_Changed'");
+                ReadLine();
 
                 int count = 0;
                 while (count < 5)
@@ -105,44 +122,48 @@ namespace MEHR_Automation
                     switch (select_Import_changed)
                     {
                         case 1:
-                            origEpassId.execQuery(sqlconnection);
-                            Console.WriteLine("-------------------------------------------------------------");
+                            Console.WriteLine("Next Action: please click Enter to verify the orig_epassid in the 'tbl_Employees_Import_Changed' ");
+                            ReadLine();
+                            origEpassId.OrigEpassId_Query(sqlconnection);
                             break;
 
                         case 2:
-                            origInternetEmail.execQuery(sqlconnection);
-                            Console.WriteLine("-------------------------------------------------------------");
+                            Console.WriteLine("Next Action: please click Enter to verify the orig_internet_email in the 'tbl_Employees_Import_Changed' ");
+                            ReadLine();
+                            origInternetEmail.OrigInternetEmail_Query(sqlconnection);
                             break;
 
                         case 3:
-                            origFirst.execQuery(sqlconnection);
-                            Console.WriteLine("-------------------------------------------------------------");
+                            Console.WriteLine("Next Action: please click Enter to verify the orig_first in the 'tbl_Employees_Import_Changed' ");
+                            ReadLine();
+                            origFirst.OrigFirst_Query(sqlconnection);
                             break;
+
                         case 4:
-                            origLast.execQuery(sqlconnection);
-                            Console.WriteLine("-------------------------------------------------------------");
+                            Console.WriteLine("Next Action: please click Enter to verify the orig_last in the 'tbl_Employees_Import_Changed' ");
+                            ReadLine();
+                            origLast.OrigLast_Query(sqlconnection);
                             break;
 
                         case 5:
-                            origMiddle.execQuery(sqlconnection);
-                            Console.WriteLine("-------------------------------------------------------------");
+                            Console.WriteLine("Next Action: please click Enter to verify the orig_middle in the 'tbl_Employees_Import_Changed' ");
+                            ReadLine();
+                            origMiddle.OrigMiddle_Query(sqlconnection);
                             break;
 
                         default:
                             Environment.Exit(0);
                             break;
-
                     }
                     count++;
                 }
 
-
-                Console.ReadLine();
-
-                ImportNotChanged importNotChanged = new ImportNotChanged();
+                Console.WriteLine("Next Action: please click Enter to  Execute the distinct(fieldname) of 'tbl_Employees_Import_Not_Changed'");
+                ReadLine();
                 importNotChanged.Import_Not_Changed(sqlconnection);
-                Console.WriteLine("-------------------------------------------------------------");
-                Console.ReadLine();
+                //update
+                Console.WriteLine("Next Action: please click Enter to verify the orig_internetemail_import_notchanged in the 'tbl_Employees_Import_Not_Changed'");
+                ReadLine();
 
                 int count1 = 0;
                 while (count1 < 1)
@@ -152,123 +173,109 @@ namespace MEHR_Automation
                     switch (select_Import_Not_changed)
                     {
                         case 1:
-                            OrigInternetemailNotchanged origInternetemailNotchanged = new OrigInternetemailNotchanged();
                             origInternetemailNotchanged.Orig_internet_Email_Not_changed(sqlconnection);
-                            Console.WriteLine("-------------------------------------------------------------");
                             break;
 
                         default:
                             Environment.Exit(0);
                             break;
-
-
                     }
                     count1++;
                 }
-                Console.ReadLine();
-                Console.ReadLine();
+
 
                 //FIX PROCPROCESS EMPLOYEEUPDATES TO GET RID OF USING THIS PROC
-                //storedProcedure.procUpdatetempfixStoredProcedure(sqlconnection);
-                //Console.WriteLine("-------------------------------------------------------------");
-                //Console.ReadLine();
-                //storedProcedure.procPostUpdateStoredProcedure(sqlconnection);
-                //Console.WriteLine("-------------------------------------------------------------");
-                //Console.ReadLine();
+                Console.WriteLine("Next Action: Please click Enter To run the stored procedure procUpdatetempfixStoredProcedure");
+                ReadLine();
+                storedProcedure.procUpdatetempfixStoredProcedure(sqlconnection);
+                ReadLine();
+                Console.WriteLine("Next Action: Please click Enter To run the stored procedure procUpdatetempfixStoredProcedure");
+                storedProcedure.procPostUpdateStoredProcedure(sqlconnection);
+                ReadLine();
 
-                //MACROQUERIES EXECUTION
-                MacroQueries macroQueries = new MacroQueries();
-                macroQueries.Add_Counts_by_Datasource(sqlconnection);
-                macroQueries.Changed_Fields_by_DataSource(sqlconnection);
-                macroQueries.Change_NotUpdated_by_DataSource(sqlconnection);
-                macroQueries.AddDeleted_by_DataSource(sqlconnection);
-                macroQueries.Removed_Countby_DataSource(sqlconnection);
-                macroQueries.Check_Email_Types(sqlconnection);
-                macroQueries.Missing_Email_Types(sqlconnection); Console.ReadLine();
-                macroQueries.Coastal_Manager_Duplicates(sqlconnection); Console.ReadLine();
-                macroQueries.Danisco_in_Workday_Duplicates(sqlconnection); Console.ReadLine();
-                macroQueries.Pioneer_D_Group_Match_With_DuPont(sqlconnection); Console.ReadLine();
-                macroQueries.Potential_Duplicates_with_potential_match(sqlconnection); Console.ReadLine();
-                macroQueries.MyAccessID_Duplicates(sqlconnection); Console.ReadLine();
-                macroQueries.Removal_Not_In_Duplicate_Tables(sqlconnection); Console.ReadLine();
-                macroQueries.Email_Duplicates(sqlconnection); Console.ReadLine();
-                macroQueries.Add_Delete_Expatriates(sqlconnection); Console.ReadLine();
-                macroQueries.New_Expatriates(sqlconnection); Console.ReadLine();
-                macroQueries.Removed_Expatriates(sqlconnection); Console.ReadLine();
-                macroQueries.vw_AddCountByDataSource(sqlconnection); Console.ReadLine();
-                macroQueries.vw_RemoveCountByDatasource(sqlconnection); Console.ReadLine();
+                Console.WriteLine("Next Action : Please click Enter to execute the Micro Queries");
+                ReadLine();
 
 
-                storedProcedure.procRemoveInvalidEmailStoredProcedure(sqlconnection);
-                Console.WriteLine("-------------------------------------------------------------");
-                Console.ReadLine();
-                storedProcedure.procRefineManagerDataStoredProcedure(sqlconnection);
-                Console.WriteLine("-------------------------------------------------------------");
-                Console.ReadLine();
-                storedProcedure.procOverrideBadUpdatesStoredProcedure(sqlconnection);
-                Console.WriteLine("-------------------------------------------------------------");
-                Console.ReadLine();
-                storedProcedure.procStage1ReviewCleanupStoredProcedure(sqlconnection);
-                Console.WriteLine("-------------------------------------------------------------");
-                Console.ReadLine();
-                storedProcedure.procUpdatePicklistValuesStoredProcedure(sqlconnection);
-                Console.WriteLine("-------------------------------------------------------------");
-                Console.ReadLine();
+                //Micro Queries Execution
+                list_MicroQueries.List_Micro_Queries(sqlconnection);
 
 
-                Console.WriteLine("UnMappedEntities");
-                picklingQueries.UnMappedEntities(sqlconnection);
-                Console.WriteLine("UnmappedSBUs");
-                picklingQueries.UnmappedSBUs(sqlconnection);
-                Console.WriteLine("UnmappedSites");
-                picklingQueries.UnmappedSites(sqlconnection);
-                Console.WriteLine("UnmappedOps");
-                picklingQueries.UnmappedOps(sqlconnection);
-                Console.WriteLine("UnmappedFunctions");
-                picklingQueries.UnmappedFunctions(sqlconnection);
-                #endregion
+                Console.WriteLine("Next Action : Please click Enter to execute the 'procRemoveInvalidEmail' Stored Procedure");
+                ReadLine();
+                storedProcedure.procRemoveInvalidEmail_SP(sqlconnection);
 
+
+                Console.WriteLine("Next Action : Please click Enter to execute the 'procRefineManager' Stored Procedure");
+                ReadLine();
+                storedProcedure.procRefineManager_SP(sqlconnection);
+
+
+                Console.WriteLine("Next Action : Please click Enter to execute the 'procOverrideBadUpdates' Stored Procedure");
+                ReadLine();
+                storedProcedure.procOverrideBadUpdates_SP(sqlconnection);
+
+                Console.WriteLine("\n **** Next Action: PLease comlete the 'MANUAL RECONCILE' in the Legal_Eagle database  manually **** \n");
+                Console.WriteLine("\n Query for MANUAL RECONCILE: \n \n select ETA.masterid[Master_ID], MAD.lglid[Legal_ID], ETA.Employee [Employee_Name_ME], MAD.Employee [Employee_Name_LE], ETA.Email [Email_ME], MAD.Email [Email_LE], ETA.Entity ,ETA.SBU from dbo.view_Employees_ToAdd ETA inner join dbo.view_Manual_Adds MAD on ((ETA.Employee= MAD.Employee and ETA.Email=MAD.Email) or (ETA.Employee= MAD.Employee))");
+                Console.WriteLine("\n In the Legal_Eagle Database if it returns then run the stored procedure 'procEmployee_Reconcile' \n QUERY : exec procEmployee_Reconcile");
+                ReadLine();
+
+
+                Console.WriteLine("Next Action : Please click Enter to execute the 'procStage1ReviewCleanup' Stored Procedure");
+                ReadLine();
+                storedProcedure.procStage1ReviewCleanup_SP(sqlconnection);
+                
+
+                Console.WriteLine("Next Action : Please click Enter to execute the 'procUpdatePicklistValues' Stored Procedure");
+                ReadLine();
+                storedProcedure.procUpdatePicklistValues_SP(sqlconnection);
+ 
+                //pickling Queries Execution
+                list_PickingQueries.List_picking_Queries(sqlconnection);
 
                 //code for Special Characters
-
+                Console.WriteLine("Next Action : Please click Enter to execute the 'replaceSpecialChar' Stored Procedure");
+                ReadLine();
                 storedProcedure.replaceSpecialChar(sqlconnection);
-                storedProcedure.findSpecialChar(sqlconnection);
+
+                Console.WriteLine("Next Action : Please click Enter to execute the 'findSpecialChar' Stored Procedure");
+                ReadLine();
+                special_Characters.findSpecialChar(sqlconnection);
+
+                Console.WriteLine("Next Action : Please click Enter to execute the 'reverifyDuplicates' Stored Procedure");
+                ReadLine();
                 verifyingDuplicateData.reverifyDuplicates(sqlconnection);
-
-
 
                 //Final Query
                 //commenting as of now
 
+                Console.WriteLine("Next Action : Please click Enter to execute the 'procUpdateMasterEmployeeTable' Stored Procedure");
+                ReadLine();
                 //storedProcedure.procUpdateMasterEmployeeTable(sqlconnection);
 
+                Console.WriteLine("\n ** PLEASE ENABLE THE JOBS UserID Synch Job and Modification Synch Job **");
 
+                Console.WriteLine( " \n ** MEHR AUTOMATION IS COMPLETED ** ");
 
                 sqlconnection.Close();
 
-
-
-
                 Console.ReadLine();
+            }
 
-
-
-
-                //}
-                //else
-                //{
-                //    Console.WriteLine("You have not disabled the job. Please disable the Mentioned jobs to proceed further ");
-                //    //Console.WriteLine("please type any key to Exit");
-                //    //Console.WriteLine("-------------------------------------------------------------");
-                //    //Console.ReadLine();
-                //    //Environment.Exit(0);
-
-                //}
-
-
+            else
+            {
+                Console.WriteLine("You have not disabled the job. Please disable the Mentioned jobs to proceed further ");
+                Console.WriteLine("please type any key to Exit");
+                ReadLine();
+                //Environment.Exit(0);
 
             }
 
+        }
+        public static void ReadLine()
+        {
+            Console.WriteLine("-------------------------------------------------------------");
+            Console.ReadLine();
         }
 
 

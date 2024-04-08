@@ -13,7 +13,7 @@ namespace MEHR_Automation
         public void CountNewRecords(SqlConnection sqlconnection)
         {
             
-            Console.WriteLine("\n count of tbl_Employees_Import_Add is started ");
+            Console.WriteLine("count of tbl_Employees_Import_Add is started ");
             string Import_Add_count_Query = "select count (*) from tbl_Employees_Import_Add";
             SqlDataReader Import_Add_datareader = executeQueries.ExecuteQuery(Import_Add_count_Query, sqlconnection);
             while (Import_Add_datareader.Read())
@@ -22,20 +22,20 @@ namespace MEHR_Automation
                 Console.WriteLine("count of tbl_Employees_Import_Add : " + Import_Add_datareader[0]);
                 if (count > 500)
                 {
-                    Console.WriteLine("\n count of tbl_Employees_Import_Add is greater than 500 we can't procedd further please reach out to the workday team for the confirmartion");
-                    Console.WriteLine("-------------------------------------------------------------");
-                    Console.ReadLine();
+                    Console.WriteLine("count of tbl_Employees_Import_Add is greater than 500 we can't procedd further please reach out to the workday team for the confirmartion");
+                    ReadLine();
+                    //Environment.Exit(0);
                 }
                 else
                 {
-                    Console.WriteLine("\n count of tbl_Employees_Import_Add is completed");
-                    Console.WriteLine("-------------------------------------------------------------");
-                    Console.ReadLine();
+                    Console.WriteLine("count of tbl_Employees_Import_Add is completed");
+                    Console.WriteLine("\n Next Action: please click Enter to count the records in the table 'tbl_Employees_Import_Add_Deleted' ");
+                    ReadLine();
                 }
             }
             
             
-            Console.WriteLine("\n count of tbl_Employees_Import_Add_Deleted is started ");
+            Console.WriteLine("count of tbl_Employees_Import_Add_Deleted is started ");
             string Import_Add_Deleted_Query = "select count (*) from tbl_Employees_Import_Add_Deleted";
             SqlDataReader Import_Add_Deleted_datareader = executeQueries.ExecuteQuery(Import_Add_Deleted_Query, sqlconnection);
             while (Import_Add_Deleted_datareader.Read())
@@ -44,22 +44,22 @@ namespace MEHR_Automation
                 Console.WriteLine("Count of tbl_Employees_Import_Add_Deleted : " + Import_Add_Deleted_datareader[0]);
                 if (count > 500)
                 {
-                    Console.WriteLine("\n count of tbl_Employees_Import_Add_Deleted is greater than 500 we can't procedd further please reach out to the workday team for the confirmartion");
-                    Console.WriteLine("-------------------------------------------------------------");
-                    Console.ReadLine();
+                    Console.WriteLine("count of tbl_Employees_Import_Add_Deleted is greater than 500 we can't procedd further please reach out to the workday team for the confirmartion");
+                    ReadLine();
+                    //Environment.Exit(0);
                 }
                 else
                 {
-                    Console.WriteLine("\n count of tbl_Employees_Import_Add_Deleted is completed");
-                    Console.WriteLine("-------------------------------------------------------------");
-                    Console.ReadLine();
+                    Console.WriteLine("count of tbl_Employees_Import_Add_Deleted is completed");
+                    Console.WriteLine("\n Next Action: please click Enter to count the records in the table 'tbl_Employees_Import_Remove' ");
+                    ReadLine();
                 }
             }
             
             
 
-            #region MyRegion
-            Console.WriteLine("\n count of tbl_Employees_Import_Remove is started ");
+            
+            Console.WriteLine("count of tbl_Employees_Import_Remove is started ");
             string Import_Remove_Query = "select count (*) from tbl_Employees_Import_Remove";
             SqlDataReader Import_Remove_Query_datareader = executeQueries.ExecuteQuery(Import_Remove_Query, sqlconnection);
             while (Import_Remove_Query_datareader.Read())
@@ -68,19 +68,23 @@ namespace MEHR_Automation
                 Console.WriteLine("Count of tbl_Employees_Import_Remove : " + Import_Remove_Query_datareader[0]);
                 if (count > 500)
                 {
-                    Console.WriteLine("\n count of tbl_Employees_Import_Remove is greater than 500 we can't procedd further please reach out to the workday team for the confirmartion");
-                    Console.WriteLine("-------------------------------------------------------------");
-                    Console.ReadLine();
+                    Console.WriteLine("count of tbl_Employees_Import_Remove is greater than 500 we can't procedd further please reach out to the workday team for the confirmartion");
+                    ReadLine();
+                    //Environment.Exit(0);
                 }
                 else
                 {
-                    Console.WriteLine("\n count of tbl_Employees_Import_Remove is completed ");
-                    Console.WriteLine("-------------------------------------------------------------");
-                    Console.ReadLine();
+                    Console.WriteLine("count of tbl_Employees_Import_Remove is completed.");
                 }
             }
             
-            #endregion
+            
+        }
+
+        public static void ReadLine()
+        {
+            Console.WriteLine("-------------------------------------------------------------");
+            Console.ReadLine();
         }
 
     }
