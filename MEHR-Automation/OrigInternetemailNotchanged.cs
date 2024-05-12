@@ -75,18 +75,42 @@ namespace MEHR_Automation
                 while (datareader.Read()) // Iterate over each value in datareader[0] and perform the search
                 {
                     var searchValue = Convert.ToString(datareader[0]);
-                    var internet_email = Convert.ToString(datareader[9]);
+                    string internet_email = Convert.ToString(datareader[9]);
+                    string[] internet_email_split = internet_email.Split('@');
+                    string internet_email_username = internet_email_split[0];
+                    string internet_email_domain = "@" + internet_email_split[1];
+
                     var range = peopleReportWorksheet.Range["A:E"]; // Adjust range to cover columns A to E
                     var foundCell = range.Cells.Find(searchValue, Type.Missing, XlFindLookIn.xlValues, XlLookAt.xlWhole);
 
                     if (foundCell != null) // If the value is found, print a message
                     {
                         var rowinpeoplereport = foundCell.Row;
-                        var valueFromColumnE = peopleReportWorksheet.Cells[rowinpeoplereport, 5].Value; // Assuming column E is the 3th column (index starts from 1)
+                        string valueFromColumnE = peopleReportWorksheet.Cells[rowinpeoplereport, 5].Value; // Assuming column E is the 3th column (index starts from 1)
+                        string[] valueFromColumnE_split = valueFromColumnE.Split('@');
+                        string valueFromColumnE_username = valueFromColumnE_split[0];
+                        string valueFromColumnE_domain = "@" + valueFromColumnE_split[1];
                         Console.WriteLine($"\nThe value '{searchValue}' is present in the people's report at row {rowinpeoplereport}and corresponding value from column C is '{valueFromColumnE}'!");
-                        if (internet_email == valueFromColumnE)
+                        if (internet_email_username == valueFromColumnE_username)
                         {
-                            Console.WriteLine("No Update is Required");
+                            if (internet_email_domain == valueFromColumnE_domain)
+                            {
+                                Console.WriteLine("No Update is Required");
+                            }
+                            else
+                            {
+                                if (internet_email_domain == "@corteva.com" && (valueFromColumnE_domain == "@pioneer.com" || valueFromColumnE_domain == "@PIONEER.COM"))
+                                {
+                                    Console.WriteLine("No Update Required");
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Update Required on the Org_internet_email");
+                                    string Orig_internet_email_Update = "Update Stage1 set Stage1.internet_email = hold.internet_email\r\nfrom tbl_employees_stage1 as stage1\r\njoin tbl_Employees_Stage1_Hold hold on stage1.masterid = hold.masterid \r\nwhere stage1.epassid in ('" + datareader[0] + "')";
+                                    SqlDataReader datareader_Update_internetemail = executeQueries.ExecuteQuery(Orig_internet_email_Update, sqlconnection);
+                                    Console.WriteLine("Org_internet_email is updated");
+                                }
+                            }
                         }
                         else
                         {

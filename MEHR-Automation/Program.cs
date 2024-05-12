@@ -43,6 +43,7 @@ namespace MEHR_Automation
             VerifyingDuplicateData verifyingDuplicateData = new VerifyingDuplicateData();
             Special_Characters special_Characters = new Special_Characters();
 
+
             Console.WriteLine("DataBase Connection is successfull");
             ReadLine();
 
@@ -58,8 +59,7 @@ namespace MEHR_Automation
             SqlConnection sqlconnection = new SqlConnection(configuration);
             StoredProcedure storedProcedure = new StoredProcedure();
             sqlconnection.Open();
-
-            special_Characters.findSpecialChar(sqlconnection);
+            
 
             tableBackup.TakeTableBackup_tbl_employees_stage1(sqlconnection);//TableBackup1
             Console.WriteLine(" \n Next Action : Please click Enter to take the Table backup for the 'tbl_employees_stage1_hold' ");
@@ -100,7 +100,7 @@ namespace MEHR_Automation
                 ReadLine();
 
 
-                //storedProcedure.StoredProcedureExecution(sqlconnection); // stored procedure Execution of proc_Pre_Update_Processing
+                storedProcedure.StoredProcedureExecution(sqlconnection); // stored procedure Execution of proc_Pre_Update_Processing
                 Console.WriteLine("proc_Pre_Update_Processing and procProcessEmployeeUpdates Stored procedure are Executed Only Once successfully ");
                 Console.WriteLine("\n Next Action: please click Enter to count the records in the table 'tbl_Employees_Import_Add' ");
                 ReadLine();
@@ -240,7 +240,7 @@ namespace MEHR_Automation
 
                 Console.WriteLine("Next Action : Please click Enter to execute the 'findSpecialChar' Stored Procedure");
                 ReadLine();
-                special_Characters.findSpecialChar(sqlconnection);
+                special_Characters.findSpecialChars(sqlconnection);
 
                 Console.WriteLine("Next Action : Please click Enter to execute the 'reverifyDuplicates' Stored Procedure");
                 ReadLine();

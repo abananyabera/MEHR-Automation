@@ -11,11 +11,12 @@ namespace MEHR_Automation
     {
 
 
-        public SqlDataReader ExecuteQuery(string query, SqlConnection connection)
+        public SqlDataReader ExecuteQuery(string query, SqlConnection connection )
         {
             try
             {
                 SqlCommand cmd = new SqlCommand(query, connection);
+                cmd.CommandTimeout = 2500;
                 SqlDataReader datareader = cmd.ExecuteReader();
                 return datareader;
             }
