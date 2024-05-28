@@ -12,6 +12,24 @@ namespace MEHR_Automation
     {
         ExecuteQueries executeQueries = new ExecuteQueries();
         StoredProcedure StoredProcedure = new StoredProcedure();
+
+        public void findSpecialChars(SqlConnection sqlconnection)
+        {
+            Console.WriteLine("\nstored procedure findSpeciaChar started ");
+            List<char> specialCharacters = new List<char>();
+            string Query = "exec find_Specialchar";
+            SqlDataReader dataReader = executeQueries.ExecuteQuery(Query, sqlconnection);
+            Console.WriteLine("{0,-15} | {1,-15} | {2,-15} | {3,-15}", dataReader.GetName(0), dataReader.GetName(1), dataReader.GetName(2), dataReader.GetName(3));
+            if (dataReader.HasRows)
+            {
+                while (dataReader.Read())
+                {
+                    Console.WriteLine("{0,-15} | {1,-15} | {2,-15} | {3,-15}", dataReader[0], dataReader[1], dataReader[2], dataReader[3]);
+                }
+                Console.WriteLine("  ** PLEASE UPDATE IF THERE ARE ANY SPECIAL CHARACTERS THAT NEED TO BE UPDATED IF ANY MANUALLY ** ");
+            }
+        }
+
         public void findSpecialChar(SqlConnection sqlconnection)
         {
             Console.WriteLine("\nstored procedure findSpeciaChar started ");
@@ -54,8 +72,6 @@ namespace MEHR_Automation
                         }
 
                     }
-
-
                 }
 
             }

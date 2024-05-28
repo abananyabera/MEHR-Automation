@@ -153,6 +153,8 @@
     <Compile Include="CountofNewRecords.cs" />
     <Compile Include="ImportChanged.cs" />
     <Compile Include="ImportNotChanged.cs" />
+    <Compile Include="List_MicroQueries.cs" />
+    <Compile Include="List_pickingQueries.cs" />
     <Compile Include="MacroQueries.cs" />
     <Compile Include="OrigEpassId.cs" />
     <Compile Include="OrigFirst.cs" />
@@ -163,8 +165,10 @@
     <Compile Include="PicklingQueries.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Special_Characters.cs" />
     <Compile Include="StoredProcedure.cs" />
     <Compile Include="tablebackup.cs" />
+    <Compile Include="Update_duplicates.cs" />
     <Compile Include="VerifyingDuplicateData.cs" />
   </ItemGroup>
   <ItemGroup>
